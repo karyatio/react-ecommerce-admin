@@ -1,0 +1,11 @@
+.layout {
+  display: flex;
+  flex-direction: row;
+}
+
+.layout__sidebar {
+  width: 15rem;
+}
+
+.layout__content {
+}

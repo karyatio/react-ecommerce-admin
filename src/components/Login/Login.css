@@ -1,0 +1,13 @@
+#login-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#login-container {
+  background: grey;
+  width: 50%;
+  margin: 0 auto;
+  padding: 1rem;
+}

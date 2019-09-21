@@ -1,0 +1,8 @@
+.sidebar-wrapper {
+  height: 100vh;
+  background-color: grey;
+}
+
+.sidebar-heading {
+  padding: 1rem;
+}
