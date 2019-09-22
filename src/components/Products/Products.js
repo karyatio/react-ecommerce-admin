@@ -14,6 +14,10 @@ function Products(props) {
 
       <Route path={`${match.path}/`} exact component={ProductList}></Route>
       <Route path={`${match.path}/create`} component={ProductForm}></Route>
+      <Route
+        path={`${match.path}/:code/edit`}
+        render={props => <ProductForm {...props} isEdit={true} />}
+      ></Route>
     </Router>
   );
 }

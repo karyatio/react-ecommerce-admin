@@ -1,14 +1,35 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "reactstrap";
 import axios from "axios";
+
+import ProductDeleteModal from "./ProductDeleteModal";
 
 class ProductList extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      products: []
+      products: [],
+      isError: false,
+      modal: false,
+      deleteId: ""
     };
   }
+
+  openModal = productId => {
+    this.setState({
+      modal: true,
+      deleteId: productId
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      modal: false,
+      deleteId: ""
+    });
+  };
 
   componentDidMount() {
     axios
@@ -18,21 +39,50 @@ class ProductList extends React.Component {
       })
       .catch(err => {
         console.log(err);
+        this.setState({ isError: true });
       });
   }
+
+  renderProducts = () => {
+    const products = this.state.products;
+    const { match } = this.props;
+
+    if (this.state.isError) return <p>Something went wrong</p>;
+
+    if (!products) return <p>No products available</p>;
+
+    return products.map(product => {
+      return (
+        <div key={product._id}>
+          <h3>{product.name}</h3>
+          <p>{product.description}</p>
+          <p>{product.price}</p>
+          <p>{product.stock}</p>
+
+          <Link to={`${match.url}/${product.code}/edit`}>Edit</Link>
+          <Button
+            color="danger"
+            onClick={this.openModal.bind(this, product._id)}
+          >
+            Delete
+          </Button>
+        </div>
+      );
+    });
+  };
 
   render() {
     return (
       <div>
         <h1>List of product</h1>
 
-        {this.state.products.map(product => {
-          return (
-            <div key={product._id}>
-              <h3>{product.name}</h3>
-            </div>
-          );
-        })}
+        {this.renderProducts()}
+
+        <ProductDeleteModal
+          modal={this.state.modal}
+          closeModal={this.closeModal}
+          deleteId={this.state.deleteId}
+        ></ProductDeleteModal>
       </div>
     );
   }
