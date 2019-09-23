@@ -6,8 +6,12 @@
 }
 
 #login-container {
-  background: grey;
-  width: 50%;
+  width: 350px;
   margin: 0 auto;
   padding: 1rem;
+  border-radius: 3px;
+  border-top: 2px solid black;
+  border-right: 3px solid black;
+  border-bottom: 3px solid black;
+  border-left: 2px solid black;
 }
