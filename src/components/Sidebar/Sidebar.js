@@ -6,7 +6,7 @@ function Sidebar(props) {
   const { match } = props;
 
   return (
-    <div className="bg-light border-right" className="sidebar-wrapper">
+    <div className="bg-light border-right sidebar-wrapper">
       <div className="sidebar-heading">Admin Page </div>
       <div className="list-group list-group-flush">
         <Link

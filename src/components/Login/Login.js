@@ -12,7 +12,6 @@ function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { history } = props;
-  const isLogged = useSelector(state => state.isLogged);
   const dispatch = useDispatch();
 
   const handleLogin = e => {
@@ -68,8 +67,6 @@ function Login(props) {
             LOGIN
           </Button>
         </Form>
-
-        {isLogged ? "LoggedIn" : "Not logged in"}
       </div>
     </div>
   );
