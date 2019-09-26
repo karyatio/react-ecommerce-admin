@@ -4,14 +4,14 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
 
 import Login from "./components/Login/Login";
-import AdminLayout from "./components/AdminLayout/AdminLayout";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 function App() {
   return (
     <Router>
       <div>
         <Route path="/" exact component={Login}></Route>
-        <Route path="/admin" component={AdminLayout}></Route>
+        <Route path="/admin" component={Dashboard}></Route>
       </div>
     </Router>
   );
