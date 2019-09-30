@@ -1,7 +1,7 @@
 import React from "react";
 
-function Chat() {
+function Chats() {
   return <h1>Chat Content</h1>;
 }
 
-export default Chat;
+export default Chats;

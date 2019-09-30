@@ -1,6 +1,18 @@
 import React, { Fragment, Component } from "react";
-import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 import axios from "axios";
+
+// Components
+import Title from "../Title";
+
+// Material UI
+import { Container, Grid, TextField, Button } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+const styles = theme => ({
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4)
+  }
+});
 
 class ProductCreate extends Component {
   constructor(props) {
@@ -102,81 +114,114 @@ class ProductCreate extends Component {
   };
 
   render() {
+    const { classes } = this.props;
     const { isEdit } = this.props;
+    const {
+      code,
+      name,
+      price,
+      stock,
+      width,
+      material,
+      description
+    } = this.state;
 
     return (
       <Fragment>
-        <Form onSubmit={this.handleSubmit} autoComplete="off">
-          <FormGroup>
-            <Label for="code">Kode Produk</Label>
-            <Input
-              type="text"
-              name="code"
-              value={this.state.code}
-              onChange={this.handleChange}
-            ></Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="name">Nama</Label>
-            <Input
-              type="text"
-              name="name"
-              value={this.state.name}
-              onChange={this.handleChange}
-            ></Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="price">Harga</Label>
-            <Input
-              type="text"
-              name="price"
-              value={this.state.price}
-              onChange={this.handleChange}
-            ></Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="material">Material</Label>
-            <Input
-              type="text"
-              name="material"
-              value={this.state.material}
-              onChange={this.handleChange}
-            ></Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="width">Lebar</Label>
-            <Input
-              type="text"
-              name="width"
-              value={this.state.width}
-              onChange={this.handleChange}
-            ></Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="description">Deskripsi</Label>
-            <Input
-              type="text"
-              name="description"
-              value={this.state.description}
-              onChange={this.handleChange}
-            ></Input>
-          </FormGroup>
-          <FormGroup>
-            <Label for="stock">Stock</Label>
-            <Input
-              type="text"
-              name="stock"
-              value={this.state.stock}
-              onChange={this.handleChange}
-            ></Input>
-          </FormGroup>
-          <Button color="primary" type="submit">
-            {isEdit ? "Update" : "Tambah"}
-          </Button>
-        </Form>
+        <Container maxWidth="lg" className={classes.container}>
+          <Title>Form Produk</Title>
+          <form onSubmit={this.handleSubmit} autoComplete="off">
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  id="code"
+                  name="code"
+                  label="Kode Produk"
+                  fullWidth
+                  value={code}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  id="name"
+                  name="name"
+                  label="Nama Produk"
+                  fullWidth
+                  value={name}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="price"
+                  name="price"
+                  label="Harga"
+                  fullWidth
+                  value={price}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="stock"
+                  name="stock"
+                  label="Stok"
+                  fullWidth
+                  value={stock}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="material"
+                  name="material"
+                  label="Bahan dan Material"
+                  fullWidth
+                  value={material}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="width"
+                  name="width"
+                  label="Lebar (cm)"
+                  fullWidth
+                  value={width}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  id="description"
+                  name="description"
+                  label="Deskripsi Produk"
+                  fullWidth
+                  value={description}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+            </Grid>
+
+            <br />
+            <br />
+            <br />
+            <Button type="submit" variant="contained" color="primary">
+              {isEdit ? "Ubah" : "Tambah"}
+            </Button>
+          </form>
+        </Container>
       </Fragment>
     );
   }
 }
 
-export default ProductCreate;
+export default withStyles(styles)(ProductCreate);

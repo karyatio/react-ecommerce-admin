@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import clsx from "clsx";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 // Material
 import { CssBaseline, Container, Grid, Paper } from "@material-ui/core";
-
 import { makeStyles } from "@material-ui/core/styles";
 
 // Components
@@ -13,6 +13,11 @@ import Chart from "./Chart";
 import Deposits from "./Deposits";
 import Orders from "./Orders";
 import Copyright from "../Copyright";
+
+import Products from "../Products/Products";
+import Customers from "../Customers/Customers";
+import Transactions from "../Transactions/Transactions";
+import Chats from "../Chats/Chats";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -48,7 +53,6 @@ export default function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const { match } = props;
 
   return (
@@ -61,33 +65,46 @@ export default function Dashboard(props) {
         handleDrawerClose={handleDrawerClose}
         match={match}
       />
-
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* Chart */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <Chart />
-              </Paper>
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <Deposits />
-              </Paper>
-            </Grid>
-            {/* Recent Orders */}
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <Orders />
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-        <Copyright />
+        <Route path={`${match.path}/dashboard`} component={DashboardContent} />
+        <Route path={`${match.path}/products`} component={Products} />
+        <Route path={`${match.path}/customers`} component={Customers} />
+        <Route path={`${match.path}/transactions`} component={Transactions} />
+        <Route path={`${match.path}/chats`} component={Chats} />
       </main>
     </div>
+  );
+}
+
+function DashboardContent() {
+  const classes = useStyles();
+  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  return (
+    <Fragment>
+      <Container maxWidth="lg" className={classes.container}>
+        <Grid container spacing={3}>
+          {/* Chart */}
+          <Grid item xs={12} md={8} lg={9}>
+            <Paper className={fixedHeightPaper}>
+              <Chart />
+            </Paper>
+          </Grid>
+          {/* Recent Deposits */}
+          <Grid item xs={12} md={4} lg={3}>
+            <Paper className={fixedHeightPaper}>
+              <Deposits />
+            </Paper>
+          </Grid>
+          {/* Recent Orders */}
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              <Orders />
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
+      <Copyright />
+    </Fragment>
   );
 }

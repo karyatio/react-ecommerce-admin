@@ -1,91 +1,136 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "reactstrap";
 import axios from "axios";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import fetchProductsAction from "../../actions/fetchProducts";
+import {
+  getProducts,
+  getProductsPending,
+  getProductsError
+} from "../../reducers/productsReducer";
 
-import ProductDeleteModal from "./ProductDeleteModal";
+// Material UI
+import {
+  Container,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Button,
+  Paper
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import EditIcon from "@material-ui/icons/Edit";
+
+// Components
+import Title from "../Title";
+
+const styles = theme => ({
+  paper: {
+    padding: theme.spacing(2)
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4)
+  }
+});
 
 class ProductList extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      products: [],
-      isError: false,
-      modal: false,
-      deleteId: ""
-    };
-  }
-
-  openModal = productId => {
-    this.setState({
-      modal: true,
-      deleteId: productId
-    });
-  };
-
-  closeModal = () => {
-    this.setState({
-      modal: false,
-      deleteId: ""
-    });
-  };
-
   componentDidMount() {
-    axios
-      .get("http://localhost:5000/api/products")
-      .then(res => {
-        this.setState({ products: res.data.data });
-      })
-      .catch(err => {
-        console.log(err);
-        this.setState({ isError: true });
-      });
+    const { fetchProducts } = this.props;
+    fetchProducts();
   }
 
-  renderProducts = () => {
-    const products = this.state.products;
-    const { match } = this.props;
-
-    if (this.state.isError) return <p>Something went wrong</p>;
-
-    if (!products) return <p>No products available</p>;
-
-    return products.map(product => {
-      return (
-        <div key={product._id}>
-          <h3>{product.name}</h3>
-          <p>{product.description}</p>
-          <p>{product.price}</p>
-          <p>{product.stock}</p>
-
-          <Link to={`${match.url}/${product.code}/edit`}>Edit</Link>
-          <Button
-            color="danger"
-            onClick={this.openModal.bind(this, product._id)}
-          >
-            Delete
-          </Button>
-        </div>
-      );
-    });
+  shouldComponentRender = () => {
+    const { pending } = this.props;
+    if (this.pending === false) return false;
+    return true;
   };
 
   render() {
+    const { classes, match, products, error } = this.props;
+
+    // If Pending
+    if (!this.shouldComponentRender()) return <h1>Pending</h1>;
+
     return (
-      <div>
-        <h1>List of product</h1>
+      <Fragment>
+        <Container maxWidth="lg" className={classes.container}>
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            to={`${match.url}/create`}
+          >
+            Tambah Produk
+          </Button>
+          <Paper className={classes.paper}>
+            <Title>Daftar Produk</Title>
 
-        {this.renderProducts()}
-
-        <ProductDeleteModal
-          modal={this.state.modal}
-          closeModal={this.closeModal}
-          deleteId={this.state.deleteId}
-        ></ProductDeleteModal>
-      </div>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Kode</TableCell>
+                  <TableCell>Nama</TableCell>
+                  <TableCell>Harga</TableCell>
+                  <TableCell>Material</TableCell>
+                  <TableCell>Lebar</TableCell>
+                  <TableCell>Stok</TableCell>
+                  <TableCell>Deskripsi</TableCell>
+                  <TableCell align="center">Detail</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {error && <span>{error}</span>}
+                {products.products.map(product => (
+                  <TableRow key={product._id}>
+                    <TableCell>{product.code}</TableCell>
+                    <TableCell>{product.name}</TableCell>
+                    <TableCell>{product.price}</TableCell>
+                    <TableCell>{product.material}</TableCell>
+                    <TableCell>{product.width}</TableCell>
+                    <TableCell>{product.stock}</TableCell>
+                    <TableCell>{product.description}</TableCell>
+                    <TableCell align="center">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="primary"
+                        component={Link}
+                        to={`${match.url}/${product._id}/edit`}
+                      >
+                        <EditIcon />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Container>
+      </Fragment>
     );
   }
 }
 
-export default ProductList;
+const mapStateToProps = state => ({
+  error: getProductsError(state),
+  products: getProducts(state),
+  pending: getProductsPending(state)
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      fetchProducts: fetchProductsAction
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ProductList));

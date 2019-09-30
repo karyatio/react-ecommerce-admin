@@ -8,10 +8,6 @@ function Products(props) {
   const { match } = props;
   return (
     <Router>
-      <Link to={`${match.url}`}>Product List</Link>
-      <br></br>
-      <Link to={`${match.url}/create`}>Create</Link>
-
       <Route path={`${match.path}/`} exact component={ProductList}></Route>
       <Route path={`${match.path}/create`} component={ProductForm}></Route>
       <Route

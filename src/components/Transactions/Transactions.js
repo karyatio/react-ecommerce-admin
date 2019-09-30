@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import TransactionList from "./TransactionList";
 import TransactionDetail from "./TransactionDetail";
 
-function Transaction(props) {
+function Transactions(props) {
   const { match } = props;
 
   console.log(match.path);
@@ -16,4 +16,4 @@ function Transaction(props) {
   );
 }
 
-export default Transaction;
+export default Transactions;

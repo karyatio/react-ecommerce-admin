@@ -30,18 +30,18 @@ export default function Navigation(props) {
         <ListItemText primary="Products" />
       </ListItem>
 
-      <ListItem button component={Link} to={`${match.url}/customers`}>
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary="Customers" />
-      </ListItem>
-
       <ListItem button component={Link} to={`${match.url}/transactions`}>
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="Transactions" />
+      </ListItem>
+
+      <ListItem button component={Link} to={`${match.url}/customers`}>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Customers" />
       </ListItem>
 
       <ListItem button component={Link} to={`${match.url}/chats`}>
