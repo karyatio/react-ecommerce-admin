@@ -1,39 +1,71 @@
 import {
-  FETCH_PRODUCTS_ERROR,
-  FETCH_PRODUCTS_PENDING,
-  FETCH_PRODUCTS_SUCCESS
-} from "../actions/action-types";
+  PENDING,
+  ERROR,
+  FETCH_PRODUCT,
+  FETCH_PRODUCTS,
+  ADD_PRODUCT,
+  EDIT_PRODUCT,
+  REMOVE_PRODUCT
+} from "../actions/types";
 
-const initialState = {
+const intialState = {
   pending: false,
+  error: null,
   products: [],
-  error: null
+  product: {}
 };
 
-export default function productsReducers(state = initialState, action) {
+export default function productsReducer(state = intialState, action) {
   switch (action.type) {
-    case FETCH_PRODUCTS_PENDING:
+    case PENDING:
       return {
         ...state,
         pending: true
       };
-    case FETCH_PRODUCTS_SUCCESS:
-      return {
-        ...state,
-        pending: false,
-        products: action.products
-      };
-    case FETCH_PRODUCTS_ERROR:
+
+    case ERROR:
       return {
         ...state,
         pending: false,
         error: action.error
+      };
+
+    case FETCH_PRODUCT:
+      return {
+        ...state,
+        product: action.product
+      };
+
+    case FETCH_PRODUCTS:
+      return {
+        ...state,
+        products: action.products
+      };
+
+    case ADD_PRODUCT:
+      return {
+        ...state,
+        pending: false,
+        product: action.product
+      };
+    case EDIT_PRODUCT:
+      return {
+        ...state,
+        pending: false,
+        product: action.product
+      };
+    case REMOVE_PRODUCT:
+      return {
+        ...state,
+        pending: false,
+        product: action.product
       };
     default:
       return state;
   }
 }
 
-export const getProducts = state => state.products;
-export const getProductsPending = state => state.pending;
-export const getProductsError = state => state.error;
+export const productsState = state => state.products;
+export const productState = state => state.product;
+export const pendingState = state => state.pending;
+export const errorState = state => state.error;

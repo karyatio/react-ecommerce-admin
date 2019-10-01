@@ -1,5 +1,16 @@
 import React, { Fragment, Component } from "react";
-import axios from "axios";
+
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import {
+  addProductAction,
+  fetchProductAction
+} from "../../actions/productsAction";
+import {
+  pendingState,
+  errorState,
+  productState
+} from "../../reducers/productsReducer";
 
 // Components
 import Title from "../Title";
@@ -7,6 +18,7 @@ import Title from "../Title";
 // Material UI
 import { Container, Grid, TextField, Button } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+
 const styles = theme => ({
   container: {
     paddingTop: theme.spacing(4),
@@ -17,6 +29,7 @@ const styles = theme => ({
 class ProductCreate extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       _id: "",
       code: "",
@@ -30,18 +43,11 @@ class ProductCreate extends Component {
   }
 
   componentDidMount() {
-    const { isEdit } = this.props;
-
+    // If this is edit
+    const { isEdit, getProduct } = this.props;
     if (isEdit) {
       const productCode = this.props.match.params.code;
-      axios
-        .get(`http://localhost:5000/api/products/${productCode}`)
-        .then(res => {
-          this.setState(res.data.data);
-        })
-        .catch(err => {
-          alert(err);
-        });
+      getProduct(productCode);
     }
   }
 
@@ -60,7 +66,7 @@ class ProductCreate extends Component {
       stock
     } = this.state;
 
-    const { isEdit } = this.props;
+    const { addProduct } = this.props;
 
     if (
       !code ||
@@ -74,43 +80,15 @@ class ProductCreate extends Component {
       return alert("Please fill in all fields");
     }
 
-    if (!isEdit) {
-      axios
-        .post("http://localhost:5000/api/products", {
-          code,
-          name,
-          price,
-          material,
-          width,
-          description,
-          stock
-        })
-        .then(result => {
-          console.log(result.data.data);
-          alert("Success");
-        })
-        .catch(err => {
-          alert("Failed");
-        });
-    } else {
-      axios
-        .put(`http://localhost:5000/api/products/${this.state._id}`, {
-          code,
-          name,
-          price,
-          material,
-          width,
-          description,
-          stock
-        })
-        .then(result => {
-          console.log(result.data.data);
-          alert("Success");
-        })
-        .catch(err => {
-          alert("Failed");
-        });
-    }
+    addProduct({
+      code,
+      name,
+      price,
+      material,
+      width,
+      description,
+      stock
+    });
   };
 
   render() {
@@ -224,4 +202,22 @@ class ProductCreate extends Component {
   }
 }
 
-export default withStyles(styles)(ProductCreate);
+const mapStateToProps = state => ({
+  pending: pendingState(state),
+  error: errorState(state),
+  product: productState(state)
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      addProduct: addProductAction,
+      getProduct: fetchProductAction
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(ProductCreate));

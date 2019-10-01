@@ -1,14 +1,12 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import fetchProductsAction from "../../actions/fetchProducts";
+import { fetchProductsAction } from "../../actions/productsAction";
 import {
-  getProducts,
-  getProductsPending,
-  getProductsError
+  productsState,
+  pendingState,
+  errorState
 } from "../../reducers/productsReducer";
 
 // Material UI
@@ -46,7 +44,7 @@ class ProductList extends React.Component {
 
   shouldComponentRender = () => {
     const { pending } = this.props;
-    if (this.pending === false) return false;
+    if (pending === false) return false;
     return true;
   };
 
@@ -117,9 +115,9 @@ class ProductList extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  error: getProductsError(state),
-  products: getProducts(state),
-  pending: getProductsPending(state)
+  error: errorState(state),
+  products: productsState(state),
+  pending: pendingState(state)
 });
 
 const mapDispatchToProps = dispatch =>

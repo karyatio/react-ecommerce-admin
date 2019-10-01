@@ -1,10 +1,15 @@
-import axios from "axios";
 import {
   LOGGED_IN,
-  FETCH_PRODUCTS_PENDING,
-  FETCH_PRODUCTS_ERROR,
-  FETCH_PRODUCTS_SUCCESS
-} from "./action-types";
+  ERROR,
+  PENDING,
+  FETCH_PRODUCTS,
+  FETCH_PRODUCT,
+  REMOVE_PRODUCT,
+  EDIT_PRODUCT,
+  ADD_PRODUCT,
+  FETCH_TRANSACTIONS,
+  FETCH_CUSTOMERS
+} from "./types";
 
 export const loggedIn = isLoggedIn => {
   return {
@@ -13,22 +18,65 @@ export const loggedIn = isLoggedIn => {
   };
 };
 
-export function fetchProductsPending() {
+export function pendingProcess() {
   return {
-    type: FETCH_PRODUCTS_PENDING
+    type: PENDING
   };
 }
 
-export function fetchProductsSuccess(products) {
+export function errorProcess(error) {
   return {
-    type: FETCH_PRODUCTS_SUCCESS,
+    type: ERROR,
+    error: error
+  };
+}
+
+export function fetchAllProducts(products) {
+  return {
+    type: FETCH_PRODUCTS,
     products: products
   };
 }
 
-export function fetchProductsError(error) {
+export function fetchProduct(product) {
   return {
-    type: FETCH_PRODUCTS_ERROR,
-    error: error
+    type: FETCH_PRODUCT,
+    product: product
+  };
+}
+
+export function addProduct(product) {
+  return {
+    type: ADD_PRODUCT,
+    product: product
+  };
+}
+
+export function editProduct(product) {
+  return {
+    type: EDIT_PRODUCT,
+    product: product
+  };
+}
+
+export function deleteProduct() {
+  return {
+    type: REMOVE_PRODUCT
+  };
+}
+
+// Transactions
+export function fetchAllTransaction(transactions) {
+  return {
+    type: FETCH_TRANSACTIONS,
+    transactions: transactions
+  };
+}
+
+// Customers
+export function fetchAllCustomers(customers) {
+  return {
+    type: FETCH_CUSTOMERS,
+    customers: customers
   };
 }

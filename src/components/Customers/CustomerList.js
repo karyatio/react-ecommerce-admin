@@ -1,7 +1,13 @@
 import React, { Component, Fragment } from "react";
-import axios from "axios";
-import cookies from "js-cookie";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import {
+  customersState,
+  pendingState,
+  errorState
+} from "../../reducers/customersReducer";
+import { fetchCustomerAction } from "../../actions/customerAction";
 
 // Component
 import Title from "../Title";
@@ -30,32 +36,13 @@ const styles = theme => ({
 });
 
 class CustomerList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      customers: []
-    };
-  }
-
   componentDidMount() {
-    const token = cookies.get("jwt");
-
-    axios
-      .get("http://localhost:5000/api/users", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(res => {
-        this.setState({ customers: res.data.data });
-      })
-      .catch(err => {
-        alert(err.message);
-      });
+    const { getCustomers } = this.props;
+    getCustomers();
   }
 
   render() {
-    const { customers } = this.state;
-    const { match, classes } = this.props;
+    const { match, classes, customers } = this.props;
 
     return (
       <Fragment>
@@ -73,7 +60,7 @@ class CustomerList extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {customers.map(customer => (
+                {customers.customers.map(customer => (
                   <TableRow key={customer._id}>
                     <TableCell>{customer.firstName}</TableCell>
                     <TableCell>{customer.lastName}</TableCell>
@@ -101,4 +88,16 @@ class CustomerList extends Component {
   }
 }
 
-export default withStyles(styles)(CustomerList);
+const mapStateToProps = state => ({
+  pending: pendingState(state),
+  error: errorState(state),
+  customers: customersState(state)
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ getCustomers: fetchCustomerAction }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(CustomerList));

@@ -1,7 +1,13 @@
 import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import cookies from "js-cookie";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { fetchTransactionsAction } from "../../actions/transactionAction";
+import {
+  errorState,
+  pendingState,
+  transactionsState
+} from "../../reducers/transactionsReducer";
 
 import Title from "../Title";
 
@@ -29,31 +35,13 @@ const styles = theme => ({
 });
 
 class TransactionList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      transactions: []
-    };
-  }
-
   componentDidMount() {
-    const token = cookies.get("jwt");
-
-    axios
-      .get("http://localhost:5000/api/transactions", {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(res => {
-        this.setState({ transactions: res.data.data });
-      })
-      .catch(err => {
-        alert(err.message);
-      });
+    const { getTransactions } = this.props;
+    getTransactions();
   }
 
   render() {
-    const { match, classes } = this.props;
+    const { match, classes, transactions } = this.props;
 
     return (
       <Fragment>
@@ -72,7 +60,7 @@ class TransactionList extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.transactions.map(transaction => (
+                {transactions.transactions.map(transaction => (
                   <TableRow key={transaction._id}>
                     <TableCell>{transaction.updatedAt}</TableCell>
                     <TableCell>{transaction.user.firstName}</TableCell>
@@ -99,4 +87,22 @@ class TransactionList extends Component {
     );
   }
 }
-export default withStyles(styles)(TransactionList);
+
+const mapStateToProps = state => ({
+  pending: pendingState(state),
+  error: errorState(state),
+  transactions: transactionsState(state)
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      getTransactions: fetchTransactionsAction
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(TransactionList));
