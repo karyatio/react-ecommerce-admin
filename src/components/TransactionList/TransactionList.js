@@ -51,11 +51,11 @@ class TransactionList extends Component {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>Date</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Ship To</TableCell>
-                  <TableCell>Payment Method</TableCell>
-                  <TableCell align="right">Sale Amount</TableCell>
+                  <TableCell>Tanggal</TableCell>
+                  <TableCell>Konsumer</TableCell>
+                  <TableCell>Dikirim Ke</TableCell>
+                  <TableCell>Metode Pembayaran</TableCell>
+                  <TableCell align="right">Status</TableCell>
                   <TableCell align="center">Detail</TableCell>
                 </TableRow>
               </TableHead>
@@ -63,10 +63,16 @@ class TransactionList extends Component {
                 {transactions.transactions.map(transaction => (
                   <TableRow key={transaction._id}>
                     <TableCell>{transaction.updatedAt}</TableCell>
-                    <TableCell>{transaction.user.firstName}</TableCell>
+                    <TableCell>
+                      {transaction.user.firstName +
+                        " " +
+                        transaction.user.lastName}
+                    </TableCell>
                     <TableCell>{transaction.shippingAddress}</TableCell>
                     <TableCell>{transaction.payments.method}</TableCell>
-                    <TableCell align="right">{transaction.total}</TableCell>
+                    <TableCell align="right">
+                      {transaction.processStatus}
+                    </TableCell>
                     <TableCell align="center">
                       <Button
                         variant="contained"

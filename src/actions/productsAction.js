@@ -3,7 +3,9 @@ import {
   fetchAllProducts,
   errorProcess,
   addProduct,
-  fetchProduct
+  fetchProduct,
+  addProductSuccess,
+  resetProductStore
 } from "./index";
 
 import axios from "axios";
@@ -11,7 +13,7 @@ import axios from "axios";
 export function fetchProductsAction() {
   return dispatch => {
     dispatch(pendingProcess());
-    fetch("http://localhost:5000/api/products")
+    fetch(`${process.env.REACT_APP_API_URL}/api/products`)
       .then(res => res.json())
       .then(res => {
         if (res.error) {
@@ -19,6 +21,7 @@ export function fetchProductsAction() {
         }
 
         dispatch(fetchAllProducts(res.data));
+
         return res.data;
       })
       .catch(error => {
@@ -31,7 +34,7 @@ export function fetchProductAction(productId) {
   return dispatch => {
     dispatch(pendingProcess());
     axios
-      .get(`http://localhost:5000/api/products/${productId}`)
+      .get(`${process.env.REACT_APP_API_URL}/api/products/${productId}`)
       .then(res => {
         dispatch(fetchProduct(res.data.data));
         return res.data.data;
@@ -42,17 +45,27 @@ export function fetchProductAction(productId) {
   };
 }
 
-export function addProductAction(product) {
+export function addProductAction(formData) {
   return dispatch => {
     dispatch(pendingProcess());
     axios
-      .post("http://localhost:5000/api/products", product)
+      .post(`${process.env.REACT_APP_API_URL}/api/products`, formData, {
+        headers: { "content-type": "multipart/form-data" }
+      })
       .then(res => {
         dispatch(addProduct(res.data.data));
+        dispatch(addProductSuccess());
         return res.data.data;
       })
       .catch(err => {
         dispatch(errorProcess(err));
       });
+  };
+}
+
+export function resetProductAction() {
+  return dispatch => {
+    dispatch(resetProductStore());
+    return;
   };
 }

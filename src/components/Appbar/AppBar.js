@@ -2,10 +2,9 @@ import React from "react";
 import clsx from "clsx";
 
 // Material
-import { AppBar, Toolbar, Typography, Badge } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import { makeStyles } from "@material-ui/core/styles";
 
 const drawerWidth = 240;
@@ -43,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function AdminAppBar(props) {
   const classes = useStyles();
-  const { open, handleDrawerOpen } = props;
+  const { open, handleDrawerOpen, handleLogout } = props;
 
   return (
     <AppBar
@@ -69,11 +68,14 @@ export default function AdminAppBar(props) {
         >
           Dashboard
         </Typography>
-        <IconButton color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.button}
+          onClick={handleLogout}
+        >
+          LOGOUT
+        </Button>
       </Toolbar>
     </AppBar>
   );

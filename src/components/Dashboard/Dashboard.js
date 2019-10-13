@@ -1,10 +1,13 @@
 import React, { useState, Fragment } from "react";
 import clsx from "clsx";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { logoutAction } from "../../actions/authAction";
+import useStyles from "./styles";
 
 // Material
 import { CssBaseline, Container, Grid, Paper } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 
 // Components
 import MyDrawer from "../Drawer/MyDrawer";
@@ -14,37 +17,12 @@ import Deposits from "./Deposits";
 import Orders from "./Orders";
 import Copyright from "../Copyright";
 
-import Products from "../Products/Products";
+import Products from "../ProductList";
 import Customers from "../Customers/Customers";
-import Transactions from "../Transactions/Transactions";
+import Transactions from "../TransactionList";
 import Chats from "../Chats/Chats";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: "flex"
-  },
-  appBarSpacer: theme.mixins.toolbar,
-  content: {
-    flexGrow: 1,
-    height: "100vh",
-    overflow: "auto"
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4)
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column"
-  },
-  fixedHeight: {
-    height: 240
-  }
-}));
-
-export default function Dashboard(props) {
+function Dashboard(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const handleDrawerOpen = () => {
@@ -53,18 +31,25 @@ export default function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const { match } = props;
+  const { match, logout, auth } = props;
+
+  // if (!auth) return <Redirect to="/" />;
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar open={open} handleDrawerOpen={handleDrawerOpen} />
+      <AppBar
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        handleLogout={logout}
+      />
 
       <MyDrawer
         open={open}
         handleDrawerClose={handleDrawerClose}
         match={match}
       />
+
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Route path={`${match.path}/dashboard`} component={DashboardContent} />
@@ -108,3 +93,22 @@ function DashboardContent() {
     </Fragment>
   );
 }
+
+const mapStateToProps = state => {
+  const { auth } = state;
+
+  return { auth };
+};
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      logout: logoutAction
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Dashboard);

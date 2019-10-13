@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-import ProductForm from "./ProductForm";
+import ProductForm from "../ProductForm/ProductForm";
 import ProductList from "./ProductList";
 
 function Products(props) {

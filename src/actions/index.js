@@ -1,5 +1,4 @@
 import {
-  LOGGED_IN,
   ERROR,
   PENDING,
   FETCH_PRODUCTS,
@@ -7,16 +6,11 @@ import {
   REMOVE_PRODUCT,
   EDIT_PRODUCT,
   ADD_PRODUCT,
+  ADD_PRODUCT_SUCCESS,
   FETCH_TRANSACTIONS,
-  FETCH_CUSTOMERS
+  FETCH_CUSTOMERS,
+  RESET_PRODUCT_STORE
 } from "./types";
-
-export const loggedIn = isLoggedIn => {
-  return {
-    type: LOGGED_IN,
-    payload: isLoggedIn
-  };
-};
 
 export function pendingProcess() {
   return {
@@ -49,6 +43,19 @@ export function addProduct(product) {
   return {
     type: ADD_PRODUCT,
     product: product
+  };
+}
+
+export function addProductSuccess() {
+  return {
+    type: ADD_PRODUCT_SUCCESS,
+    payload: true
+  };
+}
+
+export function resetProductStore() {
+  return {
+    type: RESET_PRODUCT_STORE
   };
 }
 

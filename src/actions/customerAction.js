@@ -7,7 +7,7 @@ export function fetchCustomerAction() {
     const token = cookies.get("jwt");
     dispatch(pendingProcess());
     axios
-      .get("http://localhost:5000/api/users", {
+      .get(`${process.env.REACT_APP_API_URL}/api/users`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => {

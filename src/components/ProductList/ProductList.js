@@ -1,14 +1,10 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+
 import { bindActionCreators } from "redux";
 import { fetchProductsAction } from "../../actions/productsAction";
-import {
-  productsState,
-  pendingState,
-  errorState
-} from "../../reducers/productsReducer";
-
+import styles from "./styles";
 // Material UI
 import {
   Container,
@@ -26,33 +22,24 @@ import EditIcon from "@material-ui/icons/Edit";
 // Components
 import Title from "../Title";
 
-const styles = theme => ({
-  paper: {
-    padding: theme.spacing(2)
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4)
-  }
-});
-
 class ProductList extends React.Component {
   componentDidMount() {
     const { fetchProducts } = this.props;
+
     fetchProducts();
   }
 
-  shouldComponentRender = () => {
-    const { pending } = this.props;
-    if (pending === false) return false;
-    return true;
-  };
+  // shouldComponentRender = () => {
+  //   const { pending } = this.props;
+  //   if (pending === false) return false;
+  //   return true;
+  // };
 
   render() {
     const { classes, match, products, error } = this.props;
 
     // If Pending
-    if (!this.shouldComponentRender()) return <h1>Pending</h1>;
+    // if (!this.shouldComponentRender()) return <h1>Pending</h1>;
 
     return (
       <Fragment>
@@ -71,6 +58,7 @@ class ProductList extends React.Component {
             <Table size="small">
               <TableHead>
                 <TableRow>
+                  <TableCell>Gambar</TableCell>
                   <TableCell>Kode</TableCell>
                   <TableCell>Nama</TableCell>
                   <TableCell>Harga</TableCell>
@@ -82,16 +70,24 @@ class ProductList extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {error && <span>{error}</span>}
-                {products.products.map(product => (
+                {/* {error && <span>{error}</span>} */}
+                {products.map(product => (
                   <TableRow key={product._id}>
+                    <TableCell>
+                      <img
+                        src={`${process.env.REACT_APP_API_URL}/images/${product.image}`}
+                        alt={product.name}
+                      />
+                    </TableCell>
                     <TableCell>{product.code}</TableCell>
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.price}</TableCell>
                     <TableCell>{product.material}</TableCell>
                     <TableCell>{product.width}</TableCell>
                     <TableCell>{product.stock}</TableCell>
-                    <TableCell>{product.description}</TableCell>
+                    <TableCell>
+                      {product.description.substring(0, 60)}
+                    </TableCell>
                     <TableCell align="center">
                       <Button
                         size="small"
@@ -114,11 +110,11 @@ class ProductList extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  error: errorState(state),
-  products: productsState(state),
-  pending: pendingState(state)
-});
+const mapStateToProps = state => {
+  const { products, pending, error } = state.products;
+
+  return { products, pending, error };
+};
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(

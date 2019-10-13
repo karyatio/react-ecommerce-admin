@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
-import loggedReducer from "./loggedReducer";
+import authReducer from "./authReducer";
 import productsReducer from "./productsReducer";
 import transactionsReducer from "./transactionsReducer";
 import customersReducer from "./customersReducer";
 
 export default combineReducers({
-  isLogged: loggedReducer,
+  auth: authReducer,
   products: productsReducer,
   transactions: transactionsReducer,
   customers: customersReducer

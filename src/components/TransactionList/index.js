@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import TransactionList from "./TransactionList";
-import TransactionDetail from "./TransactionDetail";
+import TransactionDetail from "../TransactionDetail/TransactionDetail";
 
 function Transactions(props) {
   const { match } = props;

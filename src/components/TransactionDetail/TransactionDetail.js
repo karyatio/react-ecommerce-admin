@@ -4,6 +4,7 @@ import cookies from "js-cookie";
 
 // Component
 import TransactionDetailStep from "./TransactionDetailStep";
+import ItemList from "./ItemList";
 
 // Material UI
 import { Container, Grid, Paper, ButtonGroup, Button } from "@material-ui/core";
@@ -95,6 +96,8 @@ class TransactionDetail extends Component {
     } = this.state.transaction;
     const { classes } = this.props;
 
+    console.log(products);
+
     return (
       <Fragment>
         <Container maxWidth="lg" className={classes.container}>
@@ -102,7 +105,9 @@ class TransactionDetail extends Component {
           <Grid container spacing={4}>
             <Grid item xs={8}>
               <Paper className={classes.paper}>
-                <h1>Transaction Name</h1>
+                <h1>
+                  Pembelian {user ? user.firstName + " " + user.lastName : ""}
+                </h1>
                 <p>{shippingAddress}</p>
                 {products
                   ? products.map(product => {
@@ -110,7 +115,13 @@ class TransactionDetail extends Component {
                     })
                   : ""}
                 <p>{processStatus}</p>
-                <p>{user ? user.firstName.concat(" ", user.lastName) : ""}</p>
+                <p>{user ? user.firstName + " " + user.lastName : ""}</p>
+
+                {products
+                  ? products.map(product => {
+                      return <ItemList product={product} />;
+                    })
+                  : ""}
               </Paper>
             </Grid>
             <Grid item xs={4}>

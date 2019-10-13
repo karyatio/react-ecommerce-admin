@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import axios from "axios";
-import cookie from "js-cookie";
-
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { loginAction } from "../../actions/authAction";
 // Material
 import {
   Typography,
   Button,
   TextField,
-  Link,
   Container,
   CssBaseline,
   Avatar,
@@ -17,140 +17,113 @@ import {
   Box
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { makeStyles } from "@material-ui/core/styles";
-
-// Redux
-import { loggedIn } from "../../actions";
-import { useSelector, useDispatch } from "react-redux";
+import styles from "./styles";
+import { withStyles } from "@material-ui/core/styles";
 
 // Components
 import Copyright from "../Copyright";
 
-const useStyles = makeStyles(theme => ({
-  "@global": {
-    body: {
-      backgroundColor: theme.palette.common.white
-    }
-  },
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
+class Login extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: "",
+      password: ""
+    };
   }
-}));
 
-export default function Login(props) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const { history } = props;
-  const dispatch = useDispatch();
-  const classes = useStyles();
-
-  const handleLogin = e => {
+  handleLogin = e => {
     e.preventDefault();
+
+    const { username, password } = this.state;
 
     if (!username || !password) {
       alert("Please fill in all fields");
     } else {
       let data = { username, password };
+      const { login } = this.props;
 
-      axios
-        .post("http://localhost:5000/api/admin/login", data)
-        .then(result => {
-          cookie.set("jwt", result.data.access_token);
-
-          dispatch(loggedIn(true));
-
-          return history.push("/admin/dashboard");
-        })
-        .catch(err => {
-          dispatch(loggedIn(false));
-          alert(err.message);
-        });
+      login(data);
     }
   };
 
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon></LockOutlinedIcon>
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign In
-        </Typography>
-        <form className={classes.form} noValidate onSubmit={handleLogin}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoFocus
-            onChange={e => setUsername(e.target.value)}
-          />
+  handleChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
 
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={e => setPassword(e.target.value)}
-          />
+  render() {
+    const { classes, auth } = this.props;
 
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
+    if (auth) return <Redirect to="/admin/dashboard" />;
 
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon></LockOutlinedIcon>
+          </Avatar>
+          {process.env.REACT_APP_API_URL}
+          <Typography component="h1" variant="h5">
             Sign In
-          </Button>
+          </Typography>
+          <form className={classes.form} noValidate onSubmit={this.handleLogin}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              name="username"
+              autoFocus
+              onChange={this.handleChange}
+            />
 
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              onChange={this.handleChange}
+            />
 
-      <Box mt={8}>
-        <Copyright />
-      </Box>
-    </Container>
-  );
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
+            </Button>
+          </form>
+        </div>
+
+        <Box mt={8}>
+          <Copyright />
+        </Box>
+      </Container>
+    );
+  }
 }
+
+const mapStateToProps = state => {
+  const { auth } = state;
+
+  return { auth };
+};
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ login: loginAction }, dispatch);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Login));

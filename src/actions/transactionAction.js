@@ -8,7 +8,7 @@ export function fetchTransactionsAction() {
     const token = cookies.get("jwt");
 
     axios
-      .get("http://localhost:5000/api/transactions", {
+      .get(`${process.env.REACT_APP_API_URL}/api/transactions`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => {

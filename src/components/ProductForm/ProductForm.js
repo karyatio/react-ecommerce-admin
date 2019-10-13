@@ -1,16 +1,12 @@
 import React, { Fragment, Component } from "react";
-
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   addProductAction,
-  fetchProductAction
+  fetchProductAction,
+  resetProductAction
 } from "../../actions/productsAction";
-import {
-  pendingState,
-  errorState,
-  productState
-} from "../../reducers/productsReducer";
 
 // Components
 import Title from "../Title";
@@ -38,62 +34,54 @@ class ProductCreate extends Component {
       material: "",
       width: "",
       description: "",
-      stock: ""
+      stock: "",
+      color: "",
+      image: null
     };
   }
 
   componentDidMount() {
-    // If this is edit
-    const { isEdit, getProduct } = this.props;
-    if (isEdit) {
-      const productCode = this.props.match.params.code;
-      getProduct(productCode);
-    }
+    const { isEdit, getProduct, product } = this.props;
+    const productCode = this.props.match.params.code;
+
+    if (isEdit) getProduct(productCode);
+
+    this.setState(product);
+  }
+
+  componentWillUnmount() {
+    const { resetProduct } = this.props;
+
+    resetProduct();
   }
 
   handleChange = e => this.setState({ [e.target.name]: e.target.value });
 
+  handleImageChange = e => this.setState({ image: e.target.files[0] });
+
   handleSubmit = e => {
     e.preventDefault();
 
-    const {
-      code,
-      name,
-      price,
-      material,
-      width,
-      description,
-      stock
-    } = this.state;
-
     const { addProduct } = this.props;
 
-    if (
-      !code ||
-      !name ||
-      !price ||
-      !material ||
-      !width ||
-      !description ||
-      !stock
-    ) {
-      return alert("Please fill in all fields");
-    }
+    let formData = new FormData();
 
-    addProduct({
-      code,
-      name,
-      price,
-      material,
-      width,
-      description,
-      stock
-    });
+    formData.append("image", this.state.image, this.state.image.name);
+    formData.append("code", this.state.code);
+    formData.append("name", this.state.name);
+    formData.append("price", this.state.price);
+    formData.append("material", this.state.material);
+    formData.append("width", this.state.width);
+    formData.append("color", this.state.color);
+    formData.append("description", this.state.description);
+    formData.append("stock", this.state.stock);
+
+    addProduct(formData);
   };
 
   render() {
-    const { classes } = this.props;
-    const { isEdit } = this.props;
+    const { classes, success } = this.props;
+
     const {
       code,
       name,
@@ -101,8 +89,16 @@ class ProductCreate extends Component {
       stock,
       width,
       material,
-      description
+      description,
+      color,
+      fileUpload
     } = this.state;
+
+    if (success) {
+      const { resetProduct } = this.props;
+      resetProduct();
+      return <Redirect to="/admin/products" />;
+    }
 
     return (
       <Fragment>
@@ -121,7 +117,7 @@ class ProductCreate extends Component {
                   onChange={this.handleChange}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   id="name"
@@ -129,6 +125,17 @@ class ProductCreate extends Component {
                   label="Nama Produk"
                   fullWidth
                   value={name}
+                  onChange={this.handleChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  id="color"
+                  name="color"
+                  label="Warna"
+                  fullWidth
+                  value={color}
                   onChange={this.handleChange}
                 />
               </Grid>
@@ -187,13 +194,21 @@ class ProductCreate extends Component {
                   onChange={this.handleChange}
                 />
               </Grid>
+
+              <Grid item xs={12}>
+                <input
+                  type="file"
+                  required
+                  id="fileUpload"
+                  name="fileUpload"
+                  value={fileUpload}
+                  onChange={this.handleImageChange}
+                />
+              </Grid>
             </Grid>
 
-            <br />
-            <br />
-            <br />
             <Button type="submit" variant="contained" color="primary">
-              {isEdit ? "Ubah" : "Tambah"}
+              Tambah
             </Button>
           </form>
         </Container>
@@ -202,17 +217,18 @@ class ProductCreate extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  pending: pendingState(state),
-  error: errorState(state),
-  product: productState(state)
-});
+const mapStateToProps = state => {
+  const { product, pending, error, success } = state.products;
+
+  return { product, pending, error, success };
+};
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       addProduct: addProductAction,
-      getProduct: fetchProductAction
+      getProduct: fetchProductAction,
+      resetProduct: resetProductAction
     },
     dispatch
   );

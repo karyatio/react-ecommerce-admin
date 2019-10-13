@@ -4,11 +4,14 @@ import {
   FETCH_PRODUCT,
   FETCH_PRODUCTS,
   ADD_PRODUCT,
+  ADD_PRODUCT_SUCCESS,
   EDIT_PRODUCT,
-  REMOVE_PRODUCT
+  REMOVE_PRODUCT,
+  RESET_PRODUCT_STORE
 } from "../actions/types";
 
 const intialState = {
+  success: false,
   pending: false,
   error: null,
   products: [],
@@ -48,6 +51,13 @@ export default function productsReducer(state = intialState, action) {
         pending: false,
         product: action.product
       };
+
+    case ADD_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        success: true,
+        pending: false
+      };
     case EDIT_PRODUCT:
       return {
         ...state,
@@ -60,12 +70,15 @@ export default function productsReducer(state = intialState, action) {
         pending: false,
         product: action.product
       };
+    case RESET_PRODUCT_STORE:
+      return {
+        ...state,
+        pending: false,
+        error: false,
+        success: false,
+        product: {}
+      };
     default:
       return state;
   }
 }
-
-export const productsState = state => state.products;
-export const productState = state => state.product;
-export const pendingState = state => state.pending;
-export const errorState = state => state.error;

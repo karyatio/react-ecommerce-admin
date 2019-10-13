@@ -4,7 +4,7 @@ import clsx from "clsx";
 // Material
 import { Drawer, Divider, List, IconButton } from "@material-ui/core";
 import Navigation from "./Navigation";
-// import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import { makeStyles } from "@material-ui/core/styles";
 
 const drawerWidth = 240;
@@ -55,7 +55,7 @@ export default function MyDrawer(props) {
     >
       <div className={classes.toolbarIcon}>
         <IconButton onClick={handleDrawerClose}>
-          {/* <ChevronLeftIcon /> */}
+          <ChevronLeft />
         </IconButton>
       </div>
       <Divider />

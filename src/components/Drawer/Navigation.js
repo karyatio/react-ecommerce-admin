@@ -44,12 +44,12 @@ export default function Navigation(props) {
         <ListItemText primary="Customers" />
       </ListItem>
 
-      <ListItem button component={Link} to={`${match.url}/chats`}>
+      {/* <ListItem button component={Link} to={`${match.url}/chats`}>
         <ListItemIcon>
           <LayersIcon />
         </ListItemIcon>
         <ListItemText primary="Chat" />
-      </ListItem>
+      </ListItem> */}
     </div>
   );
 }
