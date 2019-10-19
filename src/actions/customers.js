@@ -9,7 +9,7 @@ import axios from "axios";
 /**
  * @desc Fetch All Customer Data
  */
-export function fetchCustomer() {
+export function fetchCustomers() {
   return dispatch => {
     const token = cookies.get("jwt");
     dispatch({

@@ -16,7 +16,7 @@ const initialState = {
   errors: {}
 };
 
-export function catalogReducer(state = initialState, action) {
+const catalogReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_CATALOG:
       return {
@@ -63,4 +63,5 @@ export function catalogReducer(state = initialState, action) {
     default:
       return state;
   }
-}
+};
+export default catalogReducer;

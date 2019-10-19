@@ -45,14 +45,18 @@ class Login extends Component {
     }
   };
 
+  handleLoginSuccess = () => {};
+
+  handleLoginError = () => {};
+
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
   render() {
-    const { classes, auth } = this.props;
+    const { classes, isLogin } = this.props;
 
-    if (auth.isLogin) return <Redirect to="/admin/dashboard" />;
+    if (isLogin) return <Redirect to="/admin/dashboard" />;
 
     return (
       <Container component="main" maxWidth="xs">
@@ -112,9 +116,9 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-  const { auth } = state;
+  const { isLogin, isLoading, errors } = state.auth;
 
-  return { auth };
+  return { isLogin, isLoading, errors };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({ login }, dispatch);

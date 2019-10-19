@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { Route, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { logoutAction } from "../../actions/authAction";
+import { logout } from "../../actions/login";
 import useStyles from "./styles";
 
 // Material
@@ -33,7 +33,7 @@ function Dashboard(props) {
   };
   const { match, logout, auth } = props;
 
-  // if (!auth) return <Redirect to="/" />;
+  // if (!auth.isLogin) return <Redirect to="/" />;
 
   return (
     <div className={classes.root}>
@@ -100,13 +100,7 @@ const mapStateToProps = state => {
   return { auth };
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      logout: logoutAction
-    },
-    dispatch
-  );
+const mapDispatchToProps = dispatch => bindActionCreators({ logout }, dispatch);
 
 export default connect(
   mapStateToProps,

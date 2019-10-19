@@ -2,12 +2,7 @@ import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { fetchTransactionsAction } from "../../actions/transactionAction";
-import {
-  errorState,
-  pendingState,
-  transactionsState
-} from "../../reducers/transactionsReducer";
+import { fetchTransactions } from "../../actions/transactions";
 
 import Title from "../Title";
 
@@ -36,8 +31,8 @@ const styles = theme => ({
 
 class TransactionList extends Component {
   componentDidMount() {
-    const { getTransactions } = this.props;
-    getTransactions();
+    const { fetchTransactions } = this.props;
+    fetchTransactions();
   }
 
   render() {
@@ -94,19 +89,13 @@ class TransactionList extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  pending: pendingState(state),
-  error: errorState(state),
-  transactions: transactionsState(state)
-});
+const mapStateToProps = state => {
+  const { isLoading, fetchSuccess, transactions, errors } = state;
+  return { isLoading, fetchSuccess, transactions, errors };
+};
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      getTransactions: fetchTransactionsAction
-    },
-    dispatch
-  );
+  bindActionCreators({ fetchTransactions }, dispatch);
 
 export default connect(
   mapStateToProps,

@@ -2,12 +2,7 @@ import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import {
-  customersState,
-  pendingState,
-  errorState
-} from "../../reducers/customersReducer";
-import { fetchCustomerAction } from "../../actions/customerAction";
+import { fetchCustomers } from "../../actions/customers";
 
 // Component
 import Title from "../Title";
@@ -37,8 +32,8 @@ const styles = theme => ({
 
 class CustomerList extends Component {
   componentDidMount() {
-    const { getCustomers } = this.props;
-    getCustomers();
+    const { fetchCustomers } = this.props;
+    fetchCustomers();
   }
 
   render() {
@@ -60,7 +55,7 @@ class CustomerList extends Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {customers.customers.map(customer => (
+                {customers.map(customer => (
                   <TableRow key={customer._id}>
                     <TableCell>{customer.firstName}</TableCell>
                     <TableCell>{customer.lastName}</TableCell>
@@ -88,14 +83,14 @@ class CustomerList extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  pending: pendingState(state),
-  error: errorState(state),
-  customers: customersState(state)
-});
+const mapStateToProps = state => {
+  const { customers } = state.customers;
+
+  return { customers };
+};
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ getCustomers: fetchCustomerAction }, dispatch);
+  bindActionCreators({ fetchCustomers }, dispatch);
 
 export default connect(
   mapStateToProps,

@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import axios from "axios";
 import {
-  addProductAction,
-  fetchProductAction,
-  resetProductAction,
-  editProductAction
-} from "../../actions/productsAction";
+  addProduct,
+  fetchProduct,
+  editProduct,
+  resetProduct
+} from "../../actions/product";
 
 // Components
 import Title from "../Title";
@@ -38,7 +38,7 @@ class ProductCreate extends Component {
       description: "",
       stock: "",
       color: "",
-      image: null
+      image: ""
     };
   }
 
@@ -89,13 +89,13 @@ class ProductCreate extends Component {
   handleUpdate = e => {
     e.preventDefault();
 
-    const { updateProduct } = this.props;
+    const { editProduct } = this.props;
 
-    updateProduct(this.state);
+    editProduct(this.state._id, this.state);
   };
 
   render() {
-    const { classes, success, isEdit } = this.props;
+    const { classes, addSuccess, editSuccess, isEdit } = this.props;
 
     const {
       code,
@@ -109,7 +109,7 @@ class ProductCreate extends Component {
       fileUpload
     } = this.state;
 
-    if (success) {
+    if (addSuccess || editSuccess) {
       const { resetProduct } = this.props;
       resetProduct();
       return <Redirect to="/admin/products" />;
@@ -235,19 +235,21 @@ class ProductCreate extends Component {
 }
 
 const mapStateToProps = state => {
-  const { product, pending, error, success } = state.products;
+  const {
+    product,
+    isLoading,
+    errors,
+    fetchSuccess,
+    addSuccess,
+    editSuccess
+  } = state.product;
 
-  return { product, pending, error, success };
+  return { product, isLoading, errors, fetchSuccess, addSuccess, editSuccess };
 };
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
-    {
-      addProduct: addProductAction,
-      getProduct: fetchProductAction,
-      resetProduct: resetProductAction,
-      updateProduct: editProductAction
-    },
+    { addProduct, fetchProduct, editProduct, resetProduct },
     dispatch
   );
 

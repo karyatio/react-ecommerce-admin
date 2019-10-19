@@ -3,10 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
-import {
-  fetchProductsAction,
-  deleteProductAction
-} from "../../actions/productsAction";
+import { fetchCatalog, deleteCatalogItem } from "../../actions/catalog";
 import styles from "./styles";
 // Material UI
 import {
@@ -37,9 +34,9 @@ class ProductList extends React.Component {
     };
   }
   componentDidMount() {
-    const { fetchProducts } = this.props;
+    const { fetchCatalog } = this.props;
 
-    fetchProducts();
+    fetchCatalog();
   }
 
   // shouldComponentRender = () => {
@@ -49,10 +46,10 @@ class ProductList extends React.Component {
   // };
 
   handleDelete = () => {
-    const { deleteProduct, fetchProducts } = this.props;
-    deleteProduct(this.state.deleteId);
+    const { deleteCatalogItem, fetchCatalog } = this.props;
+    deleteCatalogItem(this.state.deleteId);
     this.setState({ deleteId: "", modalOpen: false });
-    fetchProducts();
+    fetchCatalog();
   };
 
   handleModalOpen = id => {
@@ -154,19 +151,13 @@ class ProductList extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { products, pending, error } = state.products;
+  const { products, isLoading, errors } = state.catalog;
 
-  return { products, pending, error };
+  return { products, isLoading, errors };
 };
 
 const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      fetchProducts: fetchProductsAction,
-      deleteProduct: deleteProductAction
-    },
-    dispatch
-  );
+  bindActionCreators({ fetchCatalog, deleteCatalogItem }, dispatch);
 
 export default connect(
   mapStateToProps,
