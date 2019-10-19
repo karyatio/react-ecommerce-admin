@@ -1,9 +1,12 @@
 import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
-import { fetchProductsAction } from "../../actions/productsAction";
+import {
+  fetchProductsAction,
+  deleteProductAction
+} from "../../actions/productsAction";
 import styles from "./styles";
 // Material UI
 import {
@@ -18,11 +21,21 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 // Components
 import Title from "../Title";
+import ProductDeleteModal from "../ProductDeleteModal";
 
 class ProductList extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      modalOpen: false,
+      deleteId: ""
+    };
+  }
   componentDidMount() {
     const { fetchProducts } = this.props;
 
@@ -35,8 +48,23 @@ class ProductList extends React.Component {
   //   return true;
   // };
 
+  handleDelete = () => {
+    const { deleteProduct, fetchProducts } = this.props;
+    deleteProduct(this.state.deleteId);
+    this.setState({ deleteId: "", modalOpen: false });
+    fetchProducts();
+  };
+
+  handleModalOpen = id => {
+    this.setState({ modalOpen: true, deleteId: id });
+  };
+
+  handleModalClose = () => {
+    this.setState({ modalOpen: false, deleteId: "" });
+  };
+
   render() {
-    const { classes, match, products, error } = this.props;
+    const { classes, match, products } = this.props;
 
     // If Pending
     // if (!this.shouldComponentRender()) return <h1>Pending</h1>;
@@ -66,7 +94,7 @@ class ProductList extends React.Component {
                   <TableCell>Lebar</TableCell>
                   <TableCell>Stok</TableCell>
                   <TableCell>Deskripsi</TableCell>
-                  <TableCell align="center">Detail</TableCell>
+                  <TableCell align="center">Aksi</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -98,6 +126,15 @@ class ProductList extends React.Component {
                       >
                         <EditIcon />
                       </Button>
+
+                      <Button
+                        size="small"
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => this.handleModalOpen(product._id)}
+                      >
+                        <DeleteIcon />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -105,6 +142,12 @@ class ProductList extends React.Component {
             </Table>
           </Paper>
         </Container>
+
+        <ProductDeleteModal
+          open={this.state.modalOpen}
+          handleClose={this.handleModalClose}
+          handleDelete={this.handleDelete}
+        />
       </Fragment>
     );
   }
@@ -119,7 +162,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      fetchProducts: fetchProductsAction
+      fetchProducts: fetchProductsAction,
+      deleteProduct: deleteProductAction
     },
     dispatch
   );

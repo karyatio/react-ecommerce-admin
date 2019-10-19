@@ -2,10 +2,12 @@ import React, { Fragment, Component } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import axios from "axios";
 import {
   addProductAction,
   fetchProductAction,
-  resetProductAction
+  resetProductAction,
+  editProductAction
 } from "../../actions/productsAction";
 
 // Components
@@ -41,12 +43,17 @@ class ProductCreate extends Component {
   }
 
   componentDidMount() {
-    const { isEdit, getProduct, product } = this.props;
+    const { isEdit } = this.props;
     const productCode = this.props.match.params.code;
 
-    if (isEdit) getProduct(productCode);
-
-    this.setState(product);
+    if (isEdit) {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/api/products/${productCode}`)
+        .then(res => {
+          this.setState(res.data.data);
+        })
+        .catch(err => console.log(err.message));
+    }
   }
 
   componentWillUnmount() {
@@ -79,8 +86,16 @@ class ProductCreate extends Component {
     addProduct(formData);
   };
 
+  handleUpdate = e => {
+    e.preventDefault();
+
+    const { updateProduct } = this.props;
+
+    updateProduct(this.state);
+  };
+
   render() {
-    const { classes, success } = this.props;
+    const { classes, success, isEdit } = this.props;
 
     const {
       code,
@@ -104,7 +119,10 @@ class ProductCreate extends Component {
       <Fragment>
         <Container maxWidth="lg" className={classes.container}>
           <Title>Form Produk</Title>
-          <form onSubmit={this.handleSubmit} autoComplete="off">
+          <form
+            onSubmit={isEdit ? this.handleUpdate : this.handleSubmit}
+            autoComplete="off"
+          >
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
@@ -198,7 +216,6 @@ class ProductCreate extends Component {
               <Grid item xs={12}>
                 <input
                   type="file"
-                  required
                   id="fileUpload"
                   name="fileUpload"
                   value={fileUpload}
@@ -208,7 +225,7 @@ class ProductCreate extends Component {
             </Grid>
 
             <Button type="submit" variant="contained" color="primary">
-              Tambah
+              {isEdit ? "Ubah" : "Tambah"}
             </Button>
           </form>
         </Container>
@@ -228,7 +245,8 @@ const mapDispatchToProps = dispatch =>
     {
       addProduct: addProductAction,
       getProduct: fetchProductAction,
-      resetProduct: resetProductAction
+      resetProduct: resetProductAction,
+      updateProduct: editProductAction
     },
     dispatch
   );

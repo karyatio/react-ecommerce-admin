@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { loginAction } from "../../actions/authAction";
+import { login } from "../../actions/login";
 // Material
 import {
   Typography,
@@ -11,9 +11,6 @@ import {
   Container,
   CssBaseline,
   Avatar,
-  FormControlLabel,
-  Checkbox,
-  Grid,
   Box
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -55,7 +52,7 @@ class Login extends Component {
   render() {
     const { classes, auth } = this.props;
 
-    if (auth) return <Redirect to="/admin/dashboard" />;
+    if (auth.isLogin) return <Redirect to="/admin/dashboard" />;
 
     return (
       <Container component="main" maxWidth="xs">
@@ -120,8 +117,7 @@ const mapStateToProps = state => {
   return { auth };
 };
 
-const mapDispatchToProps = dispatch =>
-  bindActionCreators({ login: loginAction }, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ login }, dispatch);
 
 export default connect(
   mapStateToProps,
