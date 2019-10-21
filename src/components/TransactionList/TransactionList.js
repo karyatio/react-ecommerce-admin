@@ -19,15 +19,7 @@ import {
 } from "@material-ui/core";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { withStyles } from "@material-ui/core/styles";
-const styles = theme => ({
-  paper: {
-    padding: theme.spacing(2)
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4)
-  }
-});
+import styles from "./styles";
 
 class TransactionList extends Component {
   componentDidMount() {

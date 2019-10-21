@@ -65,7 +65,6 @@ class Login extends Component {
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon></LockOutlinedIcon>
           </Avatar>
-          {process.env.REACT_APP_API_URL}
           <Typography component="h1" variant="h5">
             Sign In
           </Typography>

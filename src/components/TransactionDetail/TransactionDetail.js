@@ -1,129 +1,128 @@
 import React, { Component, Fragment } from "react";
-import axios from "axios";
-import cookies from "js-cookie";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import {
+  fetchTransaction,
+  changeTransactionStatus
+} from "../../actions/transactionDetail";
 
 // Component
 import TransactionDetailStep from "./TransactionDetailStep";
-import ItemList from "./ItemList";
+import TransactionDetailInfo from "../TransactionDetailInfo";
+import TransactionDetailProduct from "../TransactionDetailProduct";
+import TransactionDetailPayment from "../TransactionDetailPayment";
+import TransactionDetailTab from "../TransactionDetailTab";
+import TransactionDetailStatusModal from "../TransactionDetailStatusModal";
 
 // Material UI
 import { Container, Grid, Paper, ButtonGroup, Button } from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 import { withStyles } from "@material-ui/core/styles";
-const styles = theme => ({
-  paper: {
-    padding: theme.spacing(2)
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4)
-  }
-});
+import styles from "./styles";
 
 class TransactionDetail extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      transaction: {},
-      activeStep: 0
+      activeStep: 0,
+      tabIndex: 0,
+      modalStatus: false,
+      selectedStatus: "",
+      status: ["Diterima", "Ditolak", "Dikirim"]
     };
   }
+
   componentDidMount() {
-    const token = cookies.get("jwt");
-
     const { id } = this.props.match.params;
+    const { fetchTransaction } = this.props;
 
-    axios
-      .get(`http://localhost:5000/api/transactions/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      .then(res => {
-        this.setState({ transaction: res.data.data });
-      })
-      .catch(err => {
-        alert(err.message);
-      });
+    fetchTransaction(id);
   }
 
-  acceptTransaction = () => {
-    const { _id } = this.state.transaction;
-    const token = cookies.get("jwt");
+  handleChangeTransactionStatus = status => {
+    const { id } = this.props.match.params;
+    const { changeTransactionStatus } = this.props;
 
-    axios
-      .put(
-        `http://localhost:5000/api/transactions/${_id}/accept`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
-      .then(res => {
-        const prevActive = this.state.activeStep;
-        this.setState({ activeStep: prevActive + 1 });
-        alert("Transaksi diterima");
-      })
-      .catch(err => {
-        alert(err.message);
-      });
+    changeTransactionStatus(id, status);
   };
 
-  rejectTransaction = () => {
-    const { _id } = this.state.transaction;
-    const token = cookies.get("jwt");
+  a11yProps = index => {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`
+    };
+  };
 
-    axios
-      .put(
-        `http://localhost:5000/api/transactions/${_id}/reject`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
-      .then(res => {
-        alert("Transaksi Ditolak");
-      })
-      .catch(err => {
-        alert(err.message);
-      });
+  handleChange = (event, newValue) => {
+    this.setState({ tabIndex: newValue });
+  };
+
+  handleModalOpen = status => {
+    this.setState({ selectedStatus: status, modalStatus: true });
+  };
+
+  handleModalClose = () => {
+    this.setState({ modalStatus: false });
+  };
+
+  getStepper = () => {
+    const { transaction } = this.props;
+
+    if (!transaction) return "";
+
+    if (transaction.processStatus === this.state.status[1]) return "";
+
+    return <TransactionDetailStep activeStep={this.state.activeStep} />;
   };
 
   render() {
-    const {
-      products,
-      shippingAddress,
-      processStatus,
-      user
-    } = this.state.transaction;
-    const { classes } = this.props;
-
-    console.log(products);
+    const { classes, transaction } = this.props;
 
     return (
       <Fragment>
         <Container maxWidth="lg" className={classes.container}>
-          <TransactionDetailStep activeStep={this.state.activeStep} />
+          {this.getStepper()}
           <Grid container spacing={4}>
             <Grid item xs={8}>
-              <Paper className={classes.paper}>
-                <h1>
-                  Pembelian {user ? user.firstName + " " + user.lastName : ""}
-                </h1>
-                <p>{shippingAddress}</p>
-                {products
-                  ? products.map(product => {
-                      return <p key={product._id}>{product._id}</p>;
-                    })
-                  : ""}
-                <p>{processStatus}</p>
-                <p>{user ? user.firstName + " " + user.lastName : ""}</p>
-
-                {products
-                  ? products.map(product => {
-                      return <ItemList product={product} />;
-                    })
-                  : ""}
-              </Paper>
+              <div className={classes.root}>
+                <AppBar position="static">
+                  <Tabs
+                    value={this.state.tabIndex}
+                    onChange={this.handleChange}
+                    aria-label="simple tabs example"
+                  >
+                    <Tab label="Info" {...this.a11yProps(0)} />
+                    <Tab label="Products" {...this.a11yProps(1)} />
+                    <Tab label="Payments" {...this.a11yProps(2)} />
+                  </Tabs>
+                </AppBar>
+                <TransactionDetailTab value={this.state.tabIndex} index={0}>
+                  <TransactionDetailInfo transaction={transaction} />
+                </TransactionDetailTab>
+                <TransactionDetailTab value={this.state.tabIndex} index={1}>
+                  {transaction.products
+                    ? transaction.products.map(product => {
+                        return (
+                          <TransactionDetailProduct
+                            key={product._id}
+                            product={product}
+                          />
+                        );
+                      })
+                    : ""}
+                </TransactionDetailTab>
+                <TransactionDetailTab value={this.state.tabIndex} index={2}>
+                  <TransactionDetailPayment
+                    total={transaction.total}
+                    payments={transaction.payments}
+                  />
+                </TransactionDetailTab>
+              </div>
             </Grid>
+
             <Grid item xs={4}>
               <Paper className={classes.paper}>
                 <ButtonGroup
@@ -134,24 +133,50 @@ class TransactionDetail extends Component {
                     variant="contained"
                     color="primary"
                     size="large"
-                    onClick={this.acceptTransaction}
+                    onClick={() => this.handleModalOpen(this.state.status[0])}
                   >
                     Terima
                   </Button>
                   <Button
                     color="secondary"
                     size="large"
-                    onClick={this.rejectTransaction}
+                    onClick={() => this.handleModalOpen(this.state.status[1])}
                   >
                     Tolak
                   </Button>
                 </ButtonGroup>
               </Paper>
             </Grid>
+
+            <TransactionDetailStatusModal
+              open={this.state.modalStatus}
+              handleClose={this.handleModalClose}
+              status={this.state.selectedStatus}
+              handleStatusChange={this.handleChangeTransactionStatus}
+            />
           </Grid>
         </Container>
       </Fragment>
     );
   }
 }
-export default withStyles(styles)(TransactionDetail);
+
+const mapStateToProps = state => {
+  const { transaction } = state.transaction;
+
+  return { transaction };
+};
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      fetchTransaction,
+      changeTransactionStatus
+    },
+    dispatch
+  );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(TransactionDetail));

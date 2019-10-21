@@ -77,6 +77,7 @@ class ProductList extends React.Component {
           >
             Tambah Produk
           </Button>
+
           <Paper className={classes.paper}>
             <Title>Daftar Produk</Title>
 
@@ -100,6 +101,7 @@ class ProductList extends React.Component {
                   <TableRow key={product._id}>
                     <TableCell>
                       <img
+                        className={classes.productImage}
                         src={`${process.env.REACT_APP_API_URL}/images/${product.image}`}
                         alt={product.name}
                       />
