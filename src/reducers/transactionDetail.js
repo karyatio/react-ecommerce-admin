@@ -5,6 +5,9 @@ import {
   CHANGE_TRANSACTION_DETAIL_STATUS,
   CHANGE_TRANSACTION_DETAIL_STATUS_SUCCESS,
   CHANGE_TRANSACTION_DETAIL_STATUS_FAILURE,
+  SET_RESI,
+  SET_RESI_SUCCESS,
+  SET_RESI_FAILURE,
   RESET_TRANSACTION_DETAIL
 } from "../actions/types";
 
@@ -12,6 +15,7 @@ const initialState = {
   isLoading: false,
   fetchSuccess: false,
   statusSuccess: false,
+  resiSuccess: false,
   transaction: {},
   errors: {}
 };
@@ -37,6 +41,7 @@ function transactionDetailReducer(state = initialState, action) {
         fetchSuccess: false,
         errors: action.payload
       };
+
     case CHANGE_TRANSACTION_DETAIL_STATUS:
       return {
         ...state,
@@ -54,6 +59,25 @@ function transactionDetailReducer(state = initialState, action) {
         ...state,
         isLoading: false,
         statusSuccess: false,
+        errors: action.payload
+      };
+
+    case SET_RESI:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case SET_RESI_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        resiSuccess: true
+      };
+    case SET_RESI_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        resiSuccess: false,
         errors: action.payload
       };
 

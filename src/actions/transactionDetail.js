@@ -5,6 +5,9 @@ import {
   CHANGE_TRANSACTION_DETAIL_STATUS,
   CHANGE_TRANSACTION_DETAIL_STATUS_SUCCESS,
   CHANGE_TRANSACTION_DETAIL_STATUS_FAILURE,
+  SET_RESI,
+  SET_RESI_SUCCESS,
+  SET_RESI_FAILURE,
   RESET_TRANSACTION_DETAIL
 } from "./types";
 import axios from "axios";
@@ -52,6 +55,36 @@ export function changeTransactionStatus(id, status) {
       .catch(err => {
         dispatch({
           type: CHANGE_TRANSACTION_DETAIL_STATUS_FAILURE,
+          payload: err
+        });
+      });
+  };
+}
+
+export function setResi(id, number) {
+  return dispatch => {
+    dispatch({ type: SET_RESI });
+
+    const token = cookies.get("jwt");
+    axios
+      .put(
+        `${process.env.REACT_APP_API_URL}/api/transactions/${id}/resi`,
+        {
+          number
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      )
+      .then(res => {
+        dispatch({
+          type: SET_RESI_SUCCESS,
+          payload: res.data.data
+        });
+      })
+      .catch(err => {
+        dispatch({
+          type: SET_RESI_FAILURE,
           payload: err
         });
       });

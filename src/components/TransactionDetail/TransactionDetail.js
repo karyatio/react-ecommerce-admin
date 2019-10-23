@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
   fetchTransaction,
-  changeTransactionStatus
+  changeTransactionStatus,
+  setResi
 } from "../../actions/transactionDetail";
 
 // Component
@@ -13,9 +14,11 @@ import TransactionDetailProduct from "../TransactionDetailProduct";
 import TransactionDetailPayment from "../TransactionDetailPayment";
 import TransactionDetailTab from "../TransactionDetailTab";
 import TransactionDetailStatusModal from "../TransactionDetailStatusModal";
+import TransactionDetailResiModal from "../TransactionDetailResiModal";
+import TransactionDetailAction from "../TransactionDetailAction";
 
 // Material UI
-import { Container, Grid, Paper, ButtonGroup, Button } from "@material-ui/core";
+import { Container, Grid } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -27,11 +30,11 @@ class TransactionDetail extends Component {
     super(props);
 
     this.state = {
-      activeStep: 0,
       tabIndex: 0,
       modalStatus: false,
+      modalResi: false,
       selectedStatus: "",
-      status: ["Diterima", "Ditolak", "Dikirim"]
+      status: ["Menunggu diterima", "Diterima", "Ditolak", "Dikirim", "Sampai"]
     };
   }
 
@@ -49,6 +52,13 @@ class TransactionDetail extends Component {
     changeTransactionStatus(id, status);
   };
 
+  handleResi = () => {
+    const { id } = this.props.match.params;
+    const { changeTransactionStatus } = this.props;
+
+    changeTransactionStatus(id, "Dikirim");
+  };
+
   a11yProps = index => {
     return {
       id: `simple-tab-${index}`,
@@ -59,7 +69,6 @@ class TransactionDetail extends Component {
   handleChange = (event, newValue) => {
     this.setState({ tabIndex: newValue });
   };
-
   handleModalOpen = status => {
     this.setState({ selectedStatus: status, modalStatus: true });
   };
@@ -68,18 +77,77 @@ class TransactionDetail extends Component {
     this.setState({ modalStatus: false });
   };
 
+  handleModalOpenResi = () => {
+    this.setState({ modalResi: true });
+  };
+
+  handleModalCloseResi = () => {
+    this.setState({ modalResi: false });
+  };
+
   getStepper = () => {
     const { transaction } = this.props;
+    let activeStep = 0;
 
     if (!transaction) return "";
 
-    if (transaction.processStatus === this.state.status[1]) return "";
+    switch (transaction.processStatus) {
+      case this.state.status[0]:
+        activeStep = 0;
+        break;
+      case this.state.status[1]:
+        activeStep = 1;
+        break;
+      case this.state.status[2]:
+        activeStep = 2;
+        break;
+      case this.state.status[3]:
+        activeStep = 3;
+        break;
+      default:
+        activeStep = 4;
+        break;
+    }
 
-    return <TransactionDetailStep activeStep={this.state.activeStep} />;
+    return <TransactionDetailStep activeStep={activeStep} />;
+  };
+
+  getActions = () => {
+    const { transaction } = this.props;
+    let activeStep = 0;
+
+    if (!transaction) return "";
+
+    switch (transaction.processStatus) {
+      case this.state.status[0]:
+        activeStep = 0;
+        break;
+      case this.state.status[1]:
+        activeStep = 1;
+        break;
+      case this.state.status[2]:
+        activeStep = 2;
+        break;
+      case this.state.status[3]:
+        activeStep = 3;
+        break;
+      default:
+        activeStep = 4;
+        break;
+    }
+
+    console.log(activeStep);
+    return (
+      <TransactionDetailAction
+        step={activeStep}
+        handleModalOpen={this.handleModalOpen}
+        handleModalOpenResi={this.handleModalOpenResi}
+      />
+    );
   };
 
   render() {
-    const { classes, transaction } = this.props;
+    const { classes, transaction, setResi } = this.props;
 
     return (
       <Fragment>
@@ -122,37 +190,20 @@ class TransactionDetail extends Component {
                 </TransactionDetailTab>
               </div>
             </Grid>
-
             <Grid item xs={4}>
-              <Paper className={classes.paper}>
-                <ButtonGroup
-                  fullWidth
-                  aria-label="large outlined secondary button group"
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    onClick={() => this.handleModalOpen(this.state.status[0])}
-                  >
-                    Terima
-                  </Button>
-                  <Button
-                    color="secondary"
-                    size="large"
-                    onClick={() => this.handleModalOpen(this.state.status[1])}
-                  >
-                    Tolak
-                  </Button>
-                </ButtonGroup>
-              </Paper>
+              {this.getActions()}
             </Grid>
-
             <TransactionDetailStatusModal
               open={this.state.modalStatus}
               handleClose={this.handleModalClose}
               status={this.state.selectedStatus}
               handleStatusChange={this.handleChangeTransactionStatus}
+            />
+            <TransactionDetailResiModal
+              open={this.state.modalResi}
+              handleClose={this.handleModalCloseResi}
+              status={this.state.selectedStatus}
+              handleResi={this.handleResi}
             />
           </Grid>
         </Container>
@@ -171,7 +222,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       fetchTransaction,
-      changeTransactionStatus
+      changeTransactionStatus,
+      setResi
     },
     dispatch
   );

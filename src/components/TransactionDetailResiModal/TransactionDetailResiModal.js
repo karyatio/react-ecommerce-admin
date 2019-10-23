@@ -17,24 +17,9 @@ function getModalStyle() {
   };
 }
 
-function TransactionDetailStatusModal({
-  open,
-  status,
-  handleClose,
-  handleStatusChange
-}) {
+function TransactionDetailResiModal({ open, handleClose, handleResi }) {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
-
-  const getTitle = () => {
-    if (status === "Diterima") {
-      return "Terima Transaksi ini ?";
-    } else if (status === "Ditolak") {
-      return "Tolak Transaksi ini ?";
-    } else {
-      return "Invalid ?";
-    }
-  };
 
   return (
     <Modal
@@ -44,19 +29,15 @@ function TransactionDetailStatusModal({
       onClose={handleClose}
     >
       <div style={modalStyle} className={classes.paper}>
-        <h2 id="simple-modal-title">{getTitle()}</h2>
+        <h2 id="simple-modal-title">Kirim Pesanan</h2>
 
         <div>
           <Button variant="contained" onClick={handleClose}>
-            Tidak
+            Batal
           </Button>
 
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => handleStatusChange(status)}
-          >
-            Ya
+          <Button variant="contained" color="secondary" onClick={handleResi}>
+            KIRIM
           </Button>
         </div>
       </div>
@@ -64,4 +45,4 @@ function TransactionDetailStatusModal({
   );
 }
 
-export default TransactionDetailStatusModal;
+export default TransactionDetailResiModal;
