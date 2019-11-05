@@ -18,7 +18,7 @@ function TransactionDetailPayment({ total, payments }) {
         <p>Status Bayar : {getStatusBayar()}</p>
         <p>Metode Bayar : {payments ? payments.method : ""}</p>
         <p>Nomor Rekening Pengirim : {payments ? payments.rekNumber : ""}</p>
-        <p>Total Bayar : {total}</p>
+        <p>Total Bayar : Rp.{total}</p>
       </div>
       <div className="pay-image">
         <img
@@ -29,13 +29,13 @@ function TransactionDetailPayment({ total, payments }) {
           }
           alt="payment"
         />
-        <Button variant="contained" color="primary">
+        {/* <Button variant="contained" color="primary">
           Valid
         </Button>
 
         <Button variant="contained" color="secondary">
           Tidak Valid
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

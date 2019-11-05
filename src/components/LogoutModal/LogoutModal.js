@@ -17,7 +17,7 @@ function getModalStyle() {
   };
 }
 
-function TransactionDetailResiModal({ open, handleClose, handleResi, resi }) {
+function LogoutModal({ open, handleClose, handleLogout }) {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
 
@@ -29,15 +29,15 @@ function TransactionDetailResiModal({ open, handleClose, handleResi, resi }) {
       onClose={handleClose}
     >
       <div style={modalStyle} className={classes.paper}>
-        <h2 id="simple-modal-title">Ubah Status Menjadi Dikirim ?</h2>
-        <p>Dengan nomor resi {resi}</p>
+        <h2 id="simple-modal-title">Logout ?</h2>
+
         <div>
           <Button variant="contained" onClick={handleClose}>
-            Batal
+            Tidak
           </Button>
 
-          <Button variant="contained" color="secondary" onClick={handleResi}>
-            KIRIM
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
+            Ya
           </Button>
         </div>
       </div>
@@ -45,4 +45,4 @@ function TransactionDetailResiModal({ open, handleClose, handleResi, resi }) {
   );
 }
 
-export default TransactionDetailResiModal;
+export default LogoutModal;

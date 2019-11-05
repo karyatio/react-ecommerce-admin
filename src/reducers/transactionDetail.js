@@ -17,7 +17,7 @@ const initialState = {
   statusSuccess: false,
   resiSuccess: false,
   transaction: {},
-  errors: {}
+  errors: null
 };
 
 function transactionDetailReducer(state = initialState, action) {

@@ -8,15 +8,18 @@ import {
   RESET_CATALOG
 } from "./types";
 import axios from "axios";
+import cookies from "js-cookie";
 
 export function fetchCatalog() {
   return dispatch => {
     dispatch({
       type: FETCH_CATALOG
     });
-
+    const token = cookies.get("jwt");
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/products`)
+      .get(`${process.env.REACT_APP_API_URL}/api/products`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .then(res => {
         dispatch({
           type: FETCH_CATALOG_SUCCESS,
@@ -34,8 +37,11 @@ export function deleteCatalogItem(id) {
     dispatch({
       type: DELETE_CATALOG_ITEM
     });
+    const token = cookies.get("jwt");
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/api/products/${id}`)
+      .delete(`${process.env.REACT_APP_API_URL}/api/products/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .then(res => {
         dispatch({
           type: DELETE_CATALOG_ITEM_SUCCESS,

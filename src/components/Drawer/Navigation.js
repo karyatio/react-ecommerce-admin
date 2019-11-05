@@ -16,12 +16,12 @@ export default function Navigation(props) {
 
   return (
     <div>
-      <ListItem button component={Link} to={`${match.url}/dashboard`}>
+      {/* <ListItem button component={Link} to={`${match.url}/dashboard`}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
-      </ListItem>
+      </ListItem> */}
 
       <ListItem button component={Link} to={`${match.url}/products`}>
         <ListItemIcon>

@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import { fetchTransactions } from "../../actions/transactions";
 
 import Title from "../Title";
+import Error from "../Error";
 
 // Material UI
 import {
@@ -28,7 +29,9 @@ class TransactionList extends Component {
   }
 
   render() {
-    const { match, classes, transactions } = this.props;
+    const { match, classes, transactions, errors } = this.props;
+
+    if (errors) return <Error errors={errors} />;
 
     return (
       <Fragment>
@@ -55,7 +58,7 @@ class TransactionList extends Component {
                         " " +
                         transaction.user.lastName}
                     </TableCell>
-                    <TableCell>{transaction.shippingAddress}</TableCell>
+                    <TableCell>{transaction.shippingAddress.address}</TableCell>
                     <TableCell>{transaction.payments.method}</TableCell>
                     <TableCell align="right">
                       {transaction.processStatus}

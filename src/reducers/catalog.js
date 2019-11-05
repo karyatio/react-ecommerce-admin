@@ -13,7 +13,7 @@ const initialState = {
   fetchSuccess: false,
   products: [],
   deleteSuccess: false,
-  errors: {}
+  errors: null
 };
 
 const catalogReducer = (state = initialState, action) => {

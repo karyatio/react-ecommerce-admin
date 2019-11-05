@@ -15,10 +15,8 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Button,
   Paper
 } from "@material-ui/core";
-import VisibilityIcon from "@material-ui/icons/Visibility";
 import { withStyles } from "@material-ui/core/styles";
 const styles = theme => ({
   paper: {
@@ -51,7 +49,7 @@ class CustomerList extends Component {
                   <TableCell>Nama Belakang</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Daftar Tanggal</TableCell>
-                  <TableCell align="center">Detail</TableCell>
+                  {/* <TableCell align="center">Detail</TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -62,7 +60,7 @@ class CustomerList extends Component {
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>{customer.createdAt}</TableCell>
                     <TableCell align="center">
-                      <Button
+                      {/* <Button
                         size="small"
                         variant="contained"
                         color="primary"
@@ -70,7 +68,7 @@ class CustomerList extends Component {
                         to={`${match.url}/${customer._id}`}
                       >
                         <VisibilityIcon />
-                      </Button>
+                      </Button> */}
                     </TableCell>
                   </TableRow>
                 ))}

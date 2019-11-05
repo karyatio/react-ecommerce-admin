@@ -8,7 +8,7 @@ import {
 const initialState = {
   isLoading: false,
   fetchSuccess: true,
-  errors: {},
+  errors: null,
   transactions: []
 };
 

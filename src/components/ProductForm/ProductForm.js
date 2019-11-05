@@ -9,6 +9,7 @@ import {
   editProduct,
   resetProduct
 } from "../../actions/product";
+import cookies from "js-cookie";
 
 // Components
 import Title from "../Title";
@@ -45,10 +46,13 @@ class ProductCreate extends Component {
   componentDidMount() {
     const { isEdit } = this.props;
     const productCode = this.props.match.params.code;
+    const token = cookies.get("jwt");
 
     if (isEdit) {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/api/products/${productCode}`)
+        .get(`${process.env.REACT_APP_API_URL}/api/products/${productCode}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
         .then(res => {
           this.setState(res.data.data);
         })
@@ -213,15 +217,19 @@ class ProductCreate extends Component {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <input
-                  type="file"
-                  id="fileUpload"
-                  name="fileUpload"
-                  value={fileUpload}
-                  onChange={this.handleImageChange}
-                />
-              </Grid>
+              {isEdit ? (
+                ""
+              ) : (
+                <Grid item xs={12}>
+                  <input
+                    type="file"
+                    id="fileUpload"
+                    name="fileUpload"
+                    value={fileUpload}
+                    onChange={this.handleImageChange}
+                  />
+                </Grid>
+              )}
             </Grid>
 
             <Button type="submit" variant="contained" color="primary">

@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { Redirect } from "react-router-dom";
 import {
   fetchTransaction,
   changeTransactionStatus,
-  setResi
+  setResi,
+  resetTransaction
 } from "../../actions/transactionDetail";
 
 // Component
@@ -16,6 +18,7 @@ import TransactionDetailTab from "../TransactionDetailTab";
 import TransactionDetailStatusModal from "../TransactionDetailStatusModal";
 import TransactionDetailResiModal from "../TransactionDetailResiModal";
 import TransactionDetailAction from "../TransactionDetailAction";
+import Error from "../Error";
 
 // Material UI
 import { Container, Grid } from "@material-ui/core";
@@ -34,7 +37,8 @@ class TransactionDetail extends Component {
       modalStatus: false,
       modalResi: false,
       selectedStatus: "",
-      status: ["Menunggu diterima", "Diterima", "Ditolak", "Dikirim", "Sampai"]
+      status: ["Menunggu diterima", "Diterima", "Ditolak", "Dikirim", "Sampai"],
+      resi: 0
     };
   }
 
@@ -54,9 +58,9 @@ class TransactionDetail extends Component {
 
   handleResi = () => {
     const { id } = this.props.match.params;
-    const { changeTransactionStatus } = this.props;
+    const { setResi } = this.props;
 
-    changeTransactionStatus(id, "Dikirim");
+    setResi(id, this.state.resi);
   };
 
   a11yProps = index => {
@@ -69,6 +73,7 @@ class TransactionDetail extends Component {
   handleChange = (event, newValue) => {
     this.setState({ tabIndex: newValue });
   };
+
   handleModalOpen = status => {
     this.setState({ selectedStatus: status, modalStatus: true });
   };
@@ -85,6 +90,10 @@ class TransactionDetail extends Component {
     this.setState({ modalResi: false });
   };
 
+  handleResiChange = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
   getStepper = () => {
     const { transaction } = this.props;
     let activeStep = 0;
@@ -99,8 +108,10 @@ class TransactionDetail extends Component {
         activeStep = 1;
         break;
       case this.state.status[2]:
-        activeStep = 2;
-        break;
+        const { resetTransaction } = this.props;
+        const { id } = this.props.match.params;
+        resetTransaction();
+        return <Redirect to={`/admin/transactions/${id}`} />;
       case this.state.status[3]:
         activeStep = 3;
         break;
@@ -142,12 +153,29 @@ class TransactionDetail extends Component {
         step={activeStep}
         handleModalOpen={this.handleModalOpen}
         handleModalOpenResi={this.handleModalOpenResi}
+        handleChange={this.handleResiChange}
       />
     );
   };
 
   render() {
-    const { classes, transaction, setResi } = this.props;
+    const {
+      classes,
+      transaction,
+      statusSuccess,
+      resiSuccess,
+      errors
+    } = this.props;
+
+    if (statusSuccess || resiSuccess) {
+      const { resetTransaction } = this.props;
+      const { id } = this.props.match.params;
+
+      resetTransaction();
+      return <Redirect to={`/admin/transactions/${id}`} />;
+    }
+
+    if (errors) return <Error errors={errors} />;
 
     return (
       <Fragment>
@@ -204,6 +232,7 @@ class TransactionDetail extends Component {
               handleClose={this.handleModalCloseResi}
               status={this.state.selectedStatus}
               handleResi={this.handleResi}
+              resi={this.state.resi}
             />
           </Grid>
         </Container>
@@ -213,9 +242,9 @@ class TransactionDetail extends Component {
 }
 
 const mapStateToProps = state => {
-  const { transaction } = state.transaction;
+  const { transaction, statusSuccess, resiSuccess, errors } = state.transaction;
 
-  return { transaction };
+  return { transaction, statusSuccess, resiSuccess, errors };
 };
 
 const mapDispatchToProps = dispatch =>
@@ -223,7 +252,8 @@ const mapDispatchToProps = dispatch =>
     {
       fetchTransaction,
       changeTransactionStatus,
-      setResi
+      setResi,
+      resetTransaction
     },
     dispatch
   );

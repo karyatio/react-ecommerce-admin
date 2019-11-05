@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { bindActionCreators } from "redux";
@@ -17,12 +17,12 @@ import {
   Paper
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
 
 // Components
 import Title from "../Title";
+import ProductListItem from "../ProductListItem";
 import ProductDeleteModal from "../ProductDeleteModal";
+import Error from "../Error";
 
 class ProductList extends React.Component {
   constructor(props) {
@@ -38,12 +38,6 @@ class ProductList extends React.Component {
 
     fetchCatalog();
   }
-
-  // shouldComponentRender = () => {
-  //   const { pending } = this.props;
-  //   if (pending === false) return false;
-  //   return true;
-  // };
 
   handleDelete = () => {
     const { deleteCatalogItem, fetchCatalog } = this.props;
@@ -61,10 +55,9 @@ class ProductList extends React.Component {
   };
 
   render() {
-    const { classes, match, products } = this.props;
+    const { classes, match, products, isLoading, errors } = this.props;
 
-    // If Pending
-    // if (!this.shouldComponentRender()) return <h1>Pending</h1>;
+    if (errors) return <Error errors={errors} />;
 
     return (
       <Fragment>
@@ -96,46 +89,14 @@ class ProductList extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {/* {error && <span>{error}</span>} */}
+                {isLoading ? "Loading" : ""}
                 {products.map(product => (
-                  <TableRow key={product._id}>
-                    <TableCell>
-                      <img
-                        className={classes.productImage}
-                        src={`${process.env.REACT_APP_API_URL}/images/${product.image}`}
-                        alt={product.name}
-                      />
-                    </TableCell>
-                    <TableCell>{product.code}</TableCell>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.price}</TableCell>
-                    <TableCell>{product.material}</TableCell>
-                    <TableCell>{product.width}</TableCell>
-                    <TableCell>{product.stock}</TableCell>
-                    <TableCell>
-                      {product.description.substring(0, 60)}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="primary"
-                        component={Link}
-                        to={`${match.url}/${product._id}/edit`}
-                      >
-                        <EditIcon />
-                      </Button>
-
-                      <Button
-                        size="small"
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => this.handleModalOpen(product._id)}
-                      >
-                        <DeleteIcon />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                  <ProductListItem
+                    key={product._id}
+                    product={product}
+                    match={match}
+                    handleModalOpen={this.handleModalOpen}
+                  />
                 ))}
               </TableBody>
             </Table>
