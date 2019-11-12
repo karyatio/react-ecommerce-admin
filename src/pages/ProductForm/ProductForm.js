@@ -1,7 +1,10 @@
 import React, { Fragment, Component } from "react";
+import cookies from "js-cookie";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { Container, Grid, TextField, Button } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import {
   addProduct,
@@ -9,14 +12,7 @@ import {
   editProduct,
   resetProduct
 } from "../../actions/product";
-import cookies from "js-cookie";
-
-// Components
-import Title from "../Title";
-
-// Material UI
-import { Container, Grid, TextField, Button } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import Title from "../../components/Title";
 
 const styles = theme => ({
   container: {

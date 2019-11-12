@@ -3,7 +3,6 @@ import { Redirect } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { login } from "../../actions/login";
-// Material
 import {
   Typography,
   Button,
@@ -17,8 +16,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import styles from "./styles";
 import { withStyles } from "@material-ui/core/styles";
 
-// Components
-import Copyright from "../Copyright";
+import Copyright from "../../components/Copyright";
 
 class Login extends Component {
   constructor(props) {
@@ -44,10 +42,6 @@ class Login extends Component {
       login(data);
     }
   };
-
-  handleLoginSuccess = () => {};
-
-  handleLoginError = () => {};
 
   handleChange = e => {
     this.setState({ [e.target.name]: e.target.value });
@@ -115,9 +109,9 @@ class Login extends Component {
 }
 
 const mapStateToProps = state => {
-  const { isLogin, isLoading, errors } = state.auth;
+  const { isLogin, isLoading, errors, user } = state.auth;
 
-  return { isLogin, isLoading, errors };
+  return { isLogin, isLoading, errors, user };
 };
 
 const mapDispatchToProps = dispatch => bindActionCreators({ login }, dispatch);

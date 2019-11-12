@@ -8,24 +8,20 @@ import {
   setResi,
   resetTransaction
 } from "../../actions/transactionDetail";
-
-// Component
-import TransactionDetailStep from "./TransactionDetailStep";
-import TransactionDetailInfo from "../TransactionDetailInfo";
-import TransactionDetailProduct from "../TransactionDetailProduct";
-import TransactionDetailPayment from "../TransactionDetailPayment";
-import TransactionDetailTab from "../TransactionDetailTab";
-import TransactionDetailStatusModal from "../TransactionDetailStatusModal";
-import TransactionDetailResiModal from "../TransactionDetailResiModal";
-import TransactionDetailAction from "../TransactionDetailAction";
-import Error from "../Error";
-
-// Material UI
 import { Container, Grid } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { withStyles } from "@material-ui/core/styles";
+import TransactionDetailStep from "../../components/TransactionDetailStep";
+import TransactionDetailInfo from "../../components/TransactionDetailInfo";
+import TransactionDetailProduct from "../../components/TransactionDetailProduct";
+import TransactionDetailPayment from "../../components/TransactionDetailPayment";
+import TransactionDetailTab from "../../components/TransactionDetailTab";
+import TransactionDetailStatusModal from "../../components/TransactionDetailStatusModal";
+import TransactionDetailResiModal from "../../components/TransactionDetailResiModal";
+import TransactionDetailAction from "../../components/TransactionDetailAction";
+import Error from "../../components/Error";
 import styles from "./styles";
 
 class TransactionDetail extends Component {
@@ -37,7 +33,13 @@ class TransactionDetail extends Component {
       modalStatus: false,
       modalResi: false,
       selectedStatus: "",
-      status: ["Menunggu diterima", "Diterima", "Ditolak", "Dikirim", "Sampai"],
+      status: [
+        "Menunggu konfirmasi",
+        "Diterima",
+        "Ditolak",
+        "Dikirim",
+        "Sampai"
+      ],
       resi: 0
     };
   }
@@ -168,11 +170,7 @@ class TransactionDetail extends Component {
     } = this.props;
 
     if (statusSuccess || resiSuccess) {
-      const { resetTransaction } = this.props;
-      const { id } = this.props.match.params;
-
-      resetTransaction();
-      return <Redirect to={`/admin/transactions/${id}`} />;
+      return window.location.reload();
     }
 
     if (errors) return <Error errors={errors} />;

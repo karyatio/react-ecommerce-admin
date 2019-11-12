@@ -13,6 +13,7 @@ const initialState = {
   fetchSuccess: false,
   products: [],
   deleteSuccess: false,
+  deletedProduct: null,
   errors: null
 };
 
@@ -40,20 +41,31 @@ const catalogReducer = (state = initialState, action) => {
     case DELETE_CATALOG_ITEM:
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        deleteSuccess: false,
+        deletedProduct: null
       };
     case DELETE_CATALOG_ITEM_SUCCESS:
+      const deletedProductId = action.payload._id;
+      var products = state.products.filter(product => {
+        if (product._id !== deletedProductId) return product;
+        return null;
+      });
+
       return {
         ...state,
+        products: products,
         isLoading: false,
-        deleteSuccess: true
+        deleteSuccess: true,
+        deletedProduct: action.payload
       };
     case DELETE_CATALOG_ITEM_FAILURE:
       return {
         ...state,
         isLoading: false,
         deleteSuccess: false,
-        errors: action.payload
+        errors: action.payload,
+        deletedProduct: null
       };
     case RESET_CATALOG:
       return {

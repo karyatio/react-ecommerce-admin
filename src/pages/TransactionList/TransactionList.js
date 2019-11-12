@@ -3,11 +3,6 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchTransactions } from "../../actions/transactions";
-
-import Title from "../Title";
-import Error from "../Error";
-
-// Material UI
 import {
   Container,
   Paper,
@@ -21,6 +16,8 @@ import {
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { withStyles } from "@material-ui/core/styles";
 import styles from "./styles";
+import Title from "../../components/Title";
+import Error from "../../components/Error";
 
 class TransactionList extends Component {
   componentDidMount() {
@@ -45,6 +42,7 @@ class TransactionList extends Component {
                   <TableCell>Konsumer</TableCell>
                   <TableCell>Dikirim Ke</TableCell>
                   <TableCell>Metode Pembayaran</TableCell>
+                  <TableCell>Total</TableCell>
                   <TableCell align="right">Status</TableCell>
                   <TableCell align="center">Detail</TableCell>
                 </TableRow>
@@ -52,7 +50,9 @@ class TransactionList extends Component {
               <TableBody>
                 {transactions.transactions.map(transaction => (
                   <TableRow key={transaction._id}>
-                    <TableCell>{transaction.updatedAt}</TableCell>
+                    <TableCell>
+                      {new Date(transaction.updatedAt).toLocaleDateString()}
+                    </TableCell>
                     <TableCell>
                       {transaction.user.firstName +
                         " " +
@@ -60,6 +60,7 @@ class TransactionList extends Component {
                     </TableCell>
                     <TableCell>{transaction.shippingAddress.address}</TableCell>
                     <TableCell>{transaction.payments.method}</TableCell>
+                    <TableCell>{transaction.total}</TableCell>
                     <TableCell align="right">
                       {transaction.processStatus}
                     </TableCell>

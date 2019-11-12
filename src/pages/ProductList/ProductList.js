@@ -1,11 +1,8 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-
 import { bindActionCreators } from "redux";
 import { fetchCatalog, deleteCatalogItem } from "../../actions/catalog";
-import styles from "./styles";
-// Material UI
 import {
   Container,
   Table,
@@ -17,12 +14,11 @@ import {
   Paper
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-
-// Components
-import Title from "../Title";
-import ProductListItem from "../ProductListItem";
-import ProductDeleteModal from "../ProductDeleteModal";
-import Error from "../Error";
+import Title from "../../components/Title";
+import ProductListItem from "../../components/ProductListItem";
+import ProductDeleteModal from "../../components/ProductDeleteModal";
+import Error from "../../components/Error";
+import styles from "./styles";
 
 class ProductList extends React.Component {
   constructor(props) {
@@ -40,10 +36,9 @@ class ProductList extends React.Component {
   }
 
   handleDelete = () => {
-    const { deleteCatalogItem, fetchCatalog } = this.props;
+    const { deleteCatalogItem } = this.props;
     deleteCatalogItem(this.state.deleteId);
     this.setState({ deleteId: "", modalOpen: false });
-    fetchCatalog();
   };
 
   handleModalOpen = id => {

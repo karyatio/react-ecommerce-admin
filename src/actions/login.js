@@ -12,7 +12,7 @@ export function login(data) {
 
         dispatch({
           type: LOGIN_SUCCESS,
-          payload: res.data.data
+          payload: res.data.access_token
         });
       })
       .catch(err => {

@@ -1,13 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchCustomers } from "../../actions/customers";
-
-// Component
-import Title from "../Title";
-
-// Material UI
+import Title from "../../components/Title";
 import {
   Container,
   Table,

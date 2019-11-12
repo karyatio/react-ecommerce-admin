@@ -10,17 +10,16 @@ import useStyles from "./styles";
 import { CssBaseline, Container, Grid, Paper } from "@material-ui/core";
 
 // Components
-import MyDrawer from "../Drawer/MyDrawer";
-import AppBar from "../Appbar/AppBar";
-import Chart from "./Chart";
-import Deposits from "./Deposits";
-import Orders from "./Orders";
-import Copyright from "../Copyright";
+import MyDrawer from "../../components/Drawer";
+import AppBar from "../../components/Appbar";
+import Chart from "../../components/Chart";
+import Deposits from "../../components/Deposits";
+import Orders from "../../components/Orders";
+import Copyright from "../../components/Copyright";
 
 import Products from "../ProductList";
-import Customers from "../Customers/Customers";
+import Customers from "../Customers";
 import Transactions from "../TransactionList";
-import Chats from "../Chats/Chats";
 
 function Dashboard(props) {
   const classes = useStyles();
@@ -33,7 +32,7 @@ function Dashboard(props) {
   };
   const { match, logout, auth } = props;
 
-  // if (!auth.isLogin) return <Redirect to="/" />;
+  if (!auth.isLogin) return <Redirect to="/" />;
 
   return (
     <div className={classes.root}>
@@ -56,7 +55,6 @@ function Dashboard(props) {
         <Route path={`${match.path}/products`} component={Products} />
         <Route path={`${match.path}/customers`} component={Customers} />
         <Route path={`${match.path}/transactions`} component={Transactions} />
-        <Route path={`${match.path}/chats`} component={Chats} />
       </main>
     </div>
   );

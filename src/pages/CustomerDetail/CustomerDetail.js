@@ -1,27 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
-
-// Compoenents
-
-// Material UI
-import { Container, Paper, Grid } from "@material-ui/core";
+import { Container, Paper } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-const styles = theme => ({
-  bio: {
-    padding: theme.spacing(2)
-  },
-  imgFluid: {
-    maxWidth: "100%",
-    height: "auto"
-  },
-  paper: {
-    padding: theme.spacing(2)
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4)
-  }
-});
+import styles from "./styles";
 
 class CustomerDetail extends Component {
   constructor(props) {

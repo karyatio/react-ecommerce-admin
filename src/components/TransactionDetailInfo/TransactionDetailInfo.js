@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import province from "../../data/province.json";
 import city from "../../data/city.json";
 
@@ -8,7 +8,8 @@ function TransactionDetailInfo({ transaction }) {
     shippingAddress,
     processStatus,
     createdAt,
-    resiNumber
+    resiNumber,
+    courService
   } = transaction;
 
   const _getShippingAddress = () => {
@@ -35,12 +36,27 @@ function TransactionDetailInfo({ transaction }) {
       );
     }
   };
+
+  const _getCourier = () => {
+    if (courService) {
+      return (
+        <Fragment>
+          <h4>Kurir {courService.courier}</h4>
+          <p>Estimasi Harga : {courService.cost}</p>
+          <p>Estimasi Waktu Layanan : {courService.service}</p>
+          <p>Estimasi Waktu Pengiriman : {courService.etd}</p>
+        </Fragment>
+      );
+    }
+  };
   return (
     <div>
       <h3>Pembelian oleh {user ? user.firstName + " " + user.lastName : ""}</h3>
       <p>Email : {user ? user.email : ""}</p>
       {_getShippingAddress()}
       <p>Tanggal : {createdAt}</p>
+      <hr />
+      {_getCourier()}
       {resiNumber ? <p>Nomor Resi : {resiNumber}</p> : ""}
     </div>
   );
